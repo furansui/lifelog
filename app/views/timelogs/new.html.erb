@@ -1,0 +1,17 @@
+<h1>Timelogs: new</h1>
+
+<%= form_for :timelog, url: timelogs_path do |f| %> <!-- goes to create -->
+  <p>
+    <%= f.label :time %>
+    <%= f.datetime_select :time %>
+  </p>
+ 
+  <p>
+    <%= f.label :event %>
+    <%= f.text_field :event %>
+  </p>
+ 
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
