@@ -1,6 +1,6 @@
-<h1>Timelogs: new</h1>
+<h1>Timelogs: edit</h1>
 
-<%= form_for :timelog, url: timelogs_path do |f| %> <!-- goes to create -->
+<%= form_for :timelog, url: timelog_path(@timelog), method: :patch do |f| %> <!-- goes to create -->
   <% if @timelog.errors.full_messages.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@timelog.errors.count, "error") %>:</h2>
