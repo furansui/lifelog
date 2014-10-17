@@ -1,1 +1,7 @@
 <h1>Timelogs</h1>
+<% @timelogs.each do |timelog| %>
+  <%= timelog.time %> <%= timelog.event %> </br>
+<% end %>
+<p>
+<%= link_to 'New timelog', new_timelog_path %>
+</p>

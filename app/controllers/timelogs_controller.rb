@@ -1,5 +1,6 @@
 class TimelogsController < ApplicationController
   def index
+    @timelogs = Timelog.all
   end
   def new
   end
