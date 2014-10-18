@@ -6,7 +6,7 @@ class TimelogsController < ApplicationController
     @timelog = Timelog.new
   end
   def create
-    @category = Category.find(params[:category_id])
+    @category = Category.find(params[:timelog][:category_id])
     @timelog = @category.timelogs.create(timelog_params)
     if @timelog.save
       redirect_to @timelog

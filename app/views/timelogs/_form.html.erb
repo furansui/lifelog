@@ -19,7 +19,12 @@
     <%= f.label :event %>
     <%= f.text_field :event %>
   </p>
- 
+
+  <p>
+    <%= f.label :category %>
+    <%= f.select :category_id, options_for_select(Category.all.map{|c|[c.name, c.id]}) %>
+  </p>
+
   <p>
     <%= f.submit %>
   </p>
