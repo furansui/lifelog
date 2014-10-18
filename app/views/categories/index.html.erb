@@ -1,6 +1,6 @@
 <h1>Categories</h1>
 <% @categories.each do |category| %>
-  <%= category.time %> <%= category.event %> 
+  <%= category.name %> <%= category.notes %> 
   <%= link_to 'Show', category_path(category) %> 
   <%= link_to 'Edit', edit_category_path(category) %> 
   <%= link_to 'Delete', category_path(category), method: :delete, data: { confirm: 'Are you sure?' } %>

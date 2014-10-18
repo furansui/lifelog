@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
   def index
-    @categories = Category.all
+    @categories = Category.all    
   end
   def new
     @category = Category.new
@@ -15,7 +15,7 @@ class CategoriesController < ApplicationController
   end
   def show
     @category = Category.find(params[:id])
-    @timelogs = @category.timelogs
+    @timelogs = Timelog.where(category_id: params[:id])
   end
   def edit
     @category = Category.find(params[:id])
