@@ -14,7 +14,9 @@ Lifelog::Application.routes.draw do
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
   resources :categories 
-  resources :timelogs
+  resources :timelogs do
+    collection { post :import }
+  end
 
   # Example resource route with options:
   #   resources :products do

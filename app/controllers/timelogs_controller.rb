@@ -16,6 +16,7 @@ class TimelogsController < ApplicationController
   end
   def show
     @timelog = Timelog.find(params[:id])
+    @category = Category.find(@timelog.category_id)
   end
   def edit
     @timelog = Timelog.find(params[:id])
@@ -32,6 +33,10 @@ class TimelogsController < ApplicationController
     @timelog = Timelog.find(params[:id])
     @timelog.destroy
     redirect_to timelogs_path
+  end
+  def import
+    Timelog.import(params[:file])
+    redirect_to timelogs_path, notice: "Timelogs imported."
   end
 
   private

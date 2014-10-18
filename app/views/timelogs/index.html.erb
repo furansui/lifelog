@@ -1,6 +1,12 @@
 <h1>Timelogs</h1>
 <% @timelogs.each do |timelog| %>
-  <%= timelog.time %> <%= timelog.event %> 
+  <%= timelog.time %>
+  <% unless timelog.category_id.blank? %>
+    <% category = Category.find(timelog.category_id) %>
+    <strong><%= link_to category.name, category_path(category) %></strong>
+  <% end %>
+  <%= timelog.event %> 
+  
   <%= link_to 'Show', timelog_path(timelog) %> 
   <%= link_to 'Edit', edit_timelog_path(timelog) %> 
   <%= link_to 'Delete', timelog_path(timelog), method: :delete, data: { confirm: 'Are you sure?' } %>
@@ -9,3 +15,9 @@
 <p>
 <%= link_to 'New timelog', new_timelog_path %>
 </p>
+
+<h2>Import CSV</h2>
+<%= form_tag import_timelogs_path, multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Import" %>
+<% end %>

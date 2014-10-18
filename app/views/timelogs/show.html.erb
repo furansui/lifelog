@@ -1,5 +1,6 @@
 <p>
   <strong><%= @timelog.event %></strong> <i>at</i> <%= @timelog.time %>
+  <%= link_to @category.name, category_path(@category) %>  
 </p>
 
 <%= link_to 'Back', timelogs_path %>

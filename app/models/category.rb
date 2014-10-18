@@ -1,3 +1,3 @@
 class Category < ActiveRecord::Base
-  has_many :timelogs
+  has_many :timelogs, dependent: :destroy
 end
