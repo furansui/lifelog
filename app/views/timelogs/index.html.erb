@@ -1,5 +1,5 @@
 <h1>Timelogs</h1>
-<% @timelogs.each do |timelog| %>
+<% @timelogs.order("time desc").each do |timelog| %>
   <%= timelog.time %>
   <% unless timelog.category_id.blank? %>
     <% category = Category.find(timelog.category_id) %>
