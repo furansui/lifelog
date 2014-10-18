@@ -2,7 +2,9 @@
 <% @timelogs.each do |timelog| %>
   <%= timelog.time %> <%= timelog.event %> 
   <%= link_to 'Show', timelog_path(timelog) %> 
-  <%= link_to 'Edit', edit_timelog_path(timelog) %></br>
+  <%= link_to 'Edit', edit_timelog_path(timelog) %> 
+  <%= link_to 'Delete', timelog_path(timelog), method: :delete, data: { confirm: 'Are you sure?' } %>
+</br>
 <% end %>
 <p>
 <%= link_to 'New timelog', new_timelog_path %>

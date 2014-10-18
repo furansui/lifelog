@@ -6,7 +6,8 @@ class TimelogsController < ApplicationController
     @timelog = Timelog.new
   end
   def create
-    @timelog = Timelog.new(timelog_params)
+    @category = Category.find(params[:category_id])
+    @timelog = @category.timelogs.create(timelog_params)
     if @timelog.save
       redirect_to @timelog
     else
@@ -26,6 +27,11 @@ class TimelogsController < ApplicationController
     else
       render 'edit'
     end
+  end
+  def destroy
+    @timelog = Timelog.find(params[:id])
+    @timelog.destroy
+    redirect_to timelogs_path
   end
 
   private

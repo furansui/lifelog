@@ -1,0 +1,13 @@
+<%= form_for @category do |f| %>
+  <p>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :notes %>
+    <%= f.text_field :notes %>
+  </p>
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>

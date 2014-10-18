@@ -1,0 +1,26 @@
+<%= form_for @timelog do |f| %>
+  <% if @timelog.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@timelog.errors.count, "error") %>:</h2>
+      <ul>
+	<% @timelog.errors.full_messages.each do |msg| %>
+	  <li><%= msg %></li>
+	<% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= f.label :time %>
+    <%= f.datetime_select :time %>
+  </p>
+ 
+  <p>
+    <%= f.label :event %>
+    <%= f.text_field :event %>
+  </p>
+ 
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
