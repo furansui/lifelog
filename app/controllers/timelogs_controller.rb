@@ -16,7 +16,7 @@ class TimelogsController < ApplicationController
   end
   def show
     @timelog = Timelog.find(params[:id])
-    @category = Category.find(@timelog.category_id)
+    @category = Category.find_by_id(@timelog.category_id)
   end
   def edit
     @timelog = Timelog.find(params[:id])
