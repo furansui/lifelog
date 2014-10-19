@@ -8,10 +8,15 @@
   <%= @category.notes %>
 </p>
 
+<p>
+  <strong>Shortcut:</strong>
+  <%= @category.shortcut %>
+</p>
+
 <h2>Timelogs:</h2>
 <%= render @category.timelogs %>
 
-<% if @category.id = 1 %>
+<% if @category.id == 1 %>
 <h2>Blank categories:</h2>
 <% Timelog.all.each do |timelog| -%>
   <%= render timelog  %>
