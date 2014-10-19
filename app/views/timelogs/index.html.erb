@@ -1,11 +1,10 @@
 <h1>Timelogs</h1>
 <% @timelogs.order("time desc").each do |timelog| %>
   <%= timelog.time %>
-  <% unless timelog.category_id.blank? %>
-    <% category = Category.find_by_id(timelog.category_id) %>
-    <% if category %>
-      <strong><%= link_to category.name, category_path(category) %></strong>
-    <% end %>
+  <%= timelog.category_id %>
+  <% category = Category.find_by_id(timelog.category_id) %>
+  <% if category %>
+    <strong><%= link_to category.name, category_path(category) %></strong>
   <% end %>
   <%= timelog.event %> 
   

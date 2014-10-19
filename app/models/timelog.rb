@@ -3,9 +3,21 @@ class Timelog < ActiveRecord::Base
   validates :event, presence: true, length: {minimum: 3}
   validates :category_id, presence: true
 
-  def self.import(file)
+  #to assign default category
+  after_initialize :init
+  def init
+    self.category_id ||= 1
+  end
+
+  #import csv
+  def self.import(file)    
     CSV.foreach(file.path, headers: true) do |row|      
-      Timelog.create!(row.to_hash)
+      row_hash = row.to_hash
+      
+      
+
+      timelog = Timelog.new(time: row_hash["time"], event: row_hash["event"], category_id: 2)
+      timelog.save!
     end                
   end
 end

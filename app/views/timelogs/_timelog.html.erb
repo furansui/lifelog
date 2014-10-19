@@ -1,3 +1,3 @@
-<p>
-  <%= timelog.time %> <%= timelog.event %>
-</p>
+<%= timelog.time %> <%= timelog.event %>
+<%= link_to 'Show', timelog_path(timelog) %> 
+<%= link_to 'Edit', edit_timelog_path(timelog) %> <br />
