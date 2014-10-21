@@ -1,4 +1,5 @@
 Lifelog::Application.routes.draw do
+  get "time/index"
   get "home/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -13,13 +14,18 @@ Lifelog::Application.routes.draw do
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
-  resources :categories 
+  resources :categories do
+    collection { 
+      post :import 
+    }
+  end
   resources :timelogs do
     collection { 
       post :import 
       post :delete
     }
   end
+  resources :time
 
   # Example resource route with options:
   #   resources :products do

@@ -33,6 +33,10 @@ class CategoriesController < ApplicationController
     @category.destroy
     redirect_to categories_path
   end
+  def import
+    Category.import(params[:file])
+    redirect_to categories_path, notice: "Categories imported."
+  end
 
   private
   def category_params

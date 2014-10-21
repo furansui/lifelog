@@ -1,11 +1,18 @@
 <h1>Categories</h1>
 <% @categories.each do |category| %>
-  <%= category.name %> <%= category.notes %> 
+  <%= category.name %> <%= category.shortcut %> <%= category.notes %> 
   <%= link_to 'Show', category_path(category) %> 
   <%= link_to 'Edit', edit_category_path(category) %> 
   <%= link_to 'Delete', category_path(category), method: :delete, data: { confirm: 'Are you sure?' } %>
 </br>
 <% end %>
+
+<h2>Import CSV</h2>
+<%= form_tag import_categories_path, multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Import" %>
+<% end %>
+
 <p>
 <%= link_to 'New category', new_category_path %>
 <%= link_to 'Home', root_path %>
