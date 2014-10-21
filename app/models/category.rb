@@ -24,7 +24,9 @@ class Category < ActiveRecord::Base
   end
 
   def self.summarize()
-    summary = Category.find_by_id(1)
+    summary = Hash.new { |h,k| h[k] = 0 }
+    category = Category.find_by_id(1)
+    summary[:name] += category.id
     summary
   end
 
