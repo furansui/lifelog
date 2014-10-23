@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141019190619) do
+ActiveRecord::Schema.define(version: 20141023204623) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -19,7 +19,10 @@ ActiveRecord::Schema.define(version: 20141019190619) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "shortcut"
+    t.integer  "parent_id"
   end
+
+  add_index "categories", ["parent_id"], name: "index_categories_on_parent_id"
 
   create_table "timelogs", force: true do |t|
     t.datetime "time"

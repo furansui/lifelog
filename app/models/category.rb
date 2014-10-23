@@ -15,7 +15,20 @@ class Category < ActiveRecord::Base
   def self.import(file)    
     CSV.foreach(file.path, headers: true) do |row|      
       row_hash = row.to_hash
-      category = Category.new(name: row_hash["name"], shortcut: row_hash["shortcut"], notes: row_hash["notes"])
+      id = ""
+      if row_hash["parent"]        
+        if Category.find_by_shortcut(row_hash["parent"].downcase)
+          id = Category.find_by_shortcut(row_hash["parent"].downcase).id
+        end
+        if Category.find_by_name(row_hash["parent"].downcase)
+          id = Category.find_by_name(row_hash["parent"].downcase).id
+        end
+        if id.blank?
+          raise "parent #{row_hash["parent"]} name #{row_hash["name"]}"
+
+        end
+      end
+      category = Category.new(name: row_hash["name"], shortcut: row_hash["shortcut"], notes: row_hash["notes"], parent_id: id)
       if category.save
       else
         raise "error on #{category.name} #{category.shortcut}"

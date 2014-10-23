@@ -13,6 +13,14 @@
   <%= @category.notes %>
 </p>
 
+
+<% if @category.parent_id %>
+<p>
+  <strong>Parent:</strong>
+  <%= Category.find_by_id(@category.parent_id).name %>
+</p>
+<% end %>
+
 <h2>Timelogs:</h2>
 <%= render @category.timelogs %>
 

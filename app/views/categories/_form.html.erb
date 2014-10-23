@@ -15,12 +15,16 @@
     <%= f.text_field :name %>
   </p>
   <p>
+    <%= f.label :shortcut %>
+    <%= f.text_field :shortcut %>
+  </p>
+  <p>
     <%= f.label :notes %>
     <%= f.text_field :notes %>
   </p>
   <p>
-    <%= f.label :shortcut %>
-    <%= f.text_field :shortcut %>
+    <%= f.label :parent %>
+    <%= f.select :parent_id, options_for_select(["none",],Category.all.map{|c|[c.name, c.id]}) %>
   </p>
   <p>
     <%= f.submit %>

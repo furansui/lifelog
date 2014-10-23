@@ -40,7 +40,7 @@ class CategoriesController < ApplicationController
 
   private
   def category_params
-    params.require(:category).permit(:name, :notes, :shortcut)
+    params.require(:category).permit(:name, :notes, :shortcut, :category_id)
   end
 
 end
