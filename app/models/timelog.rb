@@ -9,13 +9,23 @@ class Timelog < ActiveRecord::Base
     self.category_id ||= 1
   end
 
+  def self.duration()
+    Timelog.all.order("time desc").each do |timelog|
+      
+    end
+  end
+
   #import csv
   def self.import(file)    
     CSV.foreach(file.path, headers: true) do |row|      
       row_hash = row.to_hash
 
       regex = /(\S+)/
-      matches = row_hash["event"].match regex
+      if row_hash["event"]
+        matches = row_hash["event"].match regex
+      else
+        raise "error on #{row_hash}"
+      end
       
       #check the first word
       if matches

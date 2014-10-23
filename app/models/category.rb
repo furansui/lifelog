@@ -24,10 +24,18 @@ class Category < ActiveRecord::Base
   end
 
   def self.summarize()
-    summary = Hash.new { |h,k| h[k] = 0 }
-    category = Category.find_by_id(1)
-    summary[:name] += category.id
+    summary = Hash.new { |k,v| k[v] = Hash.new { |k2,v2| k2[v2] = 0 } }
+    #Category.all.each do |category|      
+      @sortedTimelog = Timelog.all.order("time desc")
+      @sortedTimelog.each_with_index do |timelog,index|        
+        #if timelog.category_id == category.id
+          if index != 0
+            summary[index][:duration] = (@sortedTimelog[index-1].time - timelog.time).to_i/60
+          end
+          summary[index][:timelog] = timelog
+        #end
+      end
+    #end
     summary
   end
-
 end

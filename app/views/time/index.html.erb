@@ -1,1 +1,6 @@
-<%= @summary[:name] %>
+<% @summary.sort.each do |k,v| %>
+  <%= v[:timelog].time %>
+  <%= v[:duration] %>
+  <%= v[:timelog].event %>
+  <br />
+<% end %>
