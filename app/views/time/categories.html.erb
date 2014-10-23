@@ -1,0 +1,15 @@
+<p>
+<%= link_to 'Home', root_path %>
+<%= link_to 'Timelog', time_timelogs_path %>
+</p>
+
+<p>
+total day is <%= @summary[:total][:total][:day] %><br />
+</p>
+
+<% @summary[:row].sort_by{|k,v| v[:duration]}.reverse.each do |k,v| %>
+  <%= number_to_percentage(v[:duration].to_f/@summary[:total][:total][:hour].to_f*100,precision: 0) %> 
+  <%= (((v[:duration].to_f/@summary[:total][:total][:day].to_f/60)*100).to_i).to_f/100 %> hours per day 
+  <%= link_to Category.find_by_id(k).name, category_path(Category.find_by_id(k)) %> 
+  <br />
+<% end %>

@@ -1,4 +1,10 @@
 <h1>Categories</h1>
+
+<p>
+<%= link_to 'New category', new_category_path %>
+<%= link_to 'Home', root_path %>
+</p>
+
 <% @categories.each do |category| %>
   <%= category.name %> <%= category.shortcut %> <%= category.notes %> 
   <%= link_to 'Show', category_path(category) %> 
@@ -13,7 +19,3 @@
   <%= submit_tag "Import" %>
 <% end %>
 
-<p>
-<%= link_to 'New category', new_category_path %>
-<%= link_to 'Home', root_path %>
-</p>

@@ -1,3 +1,8 @@
+<p>
+<%= link_to 'Home', root_path %>
+<%= link_to 'Category', time_categories_path %>
+</p>
+
 <% @summary.sort.each do |k,v| %>
   <%= v[:timelog].time %>
   <%= v[:duration] %>

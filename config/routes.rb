@@ -1,11 +1,14 @@
 Lifelog::Application.routes.draw do
-  get "time/index"
+  root 'home#index'
   get "home/index"
+
+  get "time/categories"
+  get "time/timelogs"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'home#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -25,7 +28,6 @@ Lifelog::Application.routes.draw do
       post :delete
     }
   end
-  resources :time
 
   # Example resource route with options:
   #   resources :products do

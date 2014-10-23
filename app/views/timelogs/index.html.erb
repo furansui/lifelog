@@ -1,4 +1,9 @@
 <h1>Timelogs</h1>
+
+<p>
+<%= link_to 'New timelog', new_timelog_path %> <%= link_to 'Home', root_path %>
+</p>
+
 <% @timelogs.order("time desc").each do |timelog| %>
   <%= timelog.time %>
   <%= timelog.category_id %>
@@ -31,6 +36,3 @@
   <%= submit_tag "Delete" %>
 <% end %>
 
-<p>
-<%= link_to 'New timelog', new_timelog_path %> <%= link_to 'Home', root_path %>
-</p>
