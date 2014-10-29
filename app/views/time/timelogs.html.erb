@@ -13,6 +13,12 @@
   <%= submit_tag "Submit" %>
 <% end %>
 
+<p>
+<%= link_to "Today", time_timelogs_path(start: Time.now.strftime('%Y-%m-%d 00:00'),end: Time.now.strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Yesterday", time_timelogs_path(start: ((Time.now)-1.day).strftime('%Y-%m-%d 00:00'),end: ((Time.now)-1.day).strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Last week", time_timelogs_path(start: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
+</p>
+
 <% @summary[:row].sort.each do |k,v| %>
   <%= v[:timelog].time %>
   <%= v[:duration] %>

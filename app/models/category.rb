@@ -43,6 +43,8 @@ class Category < ActiveRecord::Base
     summary[:head][:range][:start] = options[:range].begin
     summary[:head][:range][:end] = options[:range].end
 
+    if !@sortedTimelog.empty?      
+
     #get total days observed
     summary[:total][:total][:day] = 1
     curday = @sortedTimelog.first.time.midnight
@@ -74,6 +76,7 @@ class Category < ActiveRecord::Base
       end
       summary[:total][:total][:hour] += summary[:row][category.id][:duration]          
     end
+    end #if not empty
     summary
   end
 
