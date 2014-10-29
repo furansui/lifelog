@@ -3,7 +3,10 @@ Lifelog::Application.routes.draw do
   get "home/index"
 
   get "time/categories"
-  get "time/timelogs"
+
+  match "time/timelogs" => "time#timelogs", via: [:get, :post]
+  match "time/categories" => "time#categories", via: [:get, :post]
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -50,14 +50,18 @@ class Timelog < ActiveRecord::Base
     end                
   end
 
-  def self.summarize()
-    summary = Hash.new { |k,v| k[v] = Hash.new { |k2,v2| k2[v2] = 0 } }
-    @sortedTimelog = Timelog.all.order("time desc")
+  def self.summarize(options)
+    summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| h3[k3]=0 } } }
+    @sortedTimelog = Timelog.where(:time => options[:range]).order("time desc")
+
+    summary[:head][:range][:start] = options[:range].begin
+    summary[:head][:range][:end] = options[:range].end
+
     @sortedTimelog.each_with_index do |timelog,index|        
       if index != 0
-        summary[index][:duration] = (@sortedTimelog[index-1].time - timelog.time).to_i/60
+        summary[:row][index][:duration] = (@sortedTimelog[index-1].time - timelog.time).to_i/60
       end
-      summary[index][:timelog] = timelog
+      summary[:row][index][:timelog] = timelog
     end
     summary
   end

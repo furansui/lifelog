@@ -3,8 +3,19 @@
 <%= link_to 'Timelog', time_timelogs_path %>
 </p>
 
+<%= form_tag time_categories_path, multipart: true do %>
+  <%= label(:time, :start) %>
+  <%= date_select("time","start", selected: @summary[:head][:range][:start]) %>
+  <br />
+  <%= label(:time, :end) %>
+  <%= date_select("time","end", selected: @summary[:head][:range][:end]) %>
+  </br>
+  <%= submit_tag "Submit" %>
+<% end %>
+
 <p>
 total day is <%= @summary[:total][:total][:day] %><br />
+total hours is <%= @summary[:total][:total][:hour].to_f/60 %><br />
 </p>
 
 <% @summary[:row].sort_by{|k,v| v[:duration]}.reverse.each do |k,v| %>

@@ -3,7 +3,17 @@
 <%= link_to 'Category', time_categories_path %>
 </p>
 
-<% @summary.sort.each do |k,v| %>
+<%= form_tag time_timelogs_path, multipart: true do %>
+  <%= label(:time, :start) %>
+  <%= date_select("time","start", selected: @summary[:head][:range][:start]) %>
+  <br />
+  <%= label(:time, :end) %>
+  <%= date_select("time","end", selected: @summary[:head][:range][:end]) %>
+  </br>
+  <%= submit_tag "Submit" %>
+<% end %>
+
+<% @summary[:row].sort.each do |k,v| %>
   <%= v[:timelog].time %>
   <%= v[:duration] %>
   <%= v[:timelog].event %>

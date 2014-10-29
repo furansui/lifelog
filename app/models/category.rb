@@ -36,13 +36,17 @@ class Category < ActiveRecord::Base
     end                
   end
 
-  def self.summarize()
+  def self.summarize(options)
     summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| h3[k3]=0 } } }
+    @sortedTimelog = Timelog.where(:time => options[:range]).order("time desc")
+
+    summary[:head][:range][:start] = options[:range].begin
+    summary[:head][:range][:end] = options[:range].end
 
     #get total days observed
     summary[:total][:total][:day] = 1
-    curday = Timelog.first.time.midnight
-    Timelog.all.each do |timelog|
+    curday = @sortedTimelog.first.time.midnight
+    @sortedTimelog.each do |timelog|
       logday = timelog.time.midnight
       if logday != curday
         curday = logday
@@ -54,11 +58,15 @@ class Category < ActiveRecord::Base
     Category.all.each do |category|      
       summary[:row][category.id][:duration] = 0
 
-      @sortedTimelog = Timelog.all.order("time desc")
       @sortedTimelog.each_with_index do |timelog,index|            
         if timelog.category_id == category.id
+          #first timelog
           if index == 0
-            summary[:row][category.id][:duration] += (Time.now - timelog.time).to_i/60
+            if @sortedTimelog.first == Timelog.all.order("time desc").first
+              summary[:row][category.id][:duration] += (Time.now - timelog.time).to_i/60
+            else
+              summary[:row][category.id][:duration] += ((timelog.time + 1.day).midnight - timelog.time).to_i/60
+            end
           else
             summary[:row][category.id][:duration] += (@sortedTimelog[index-1].time - timelog.time).to_i/60
           end
