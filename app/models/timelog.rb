@@ -66,4 +66,10 @@ class Timelog < ActiveRecord::Base
     summary
   end
 
+  def self.process() 
+    @sortedTimelog = Timelog.where(:time => options[:range]).order("time desc")
+    @sortedTimelog.each_with_index do |timelog,index|
+      timelog.duration = 1.hour
+    end
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023204623) do
+ActiveRecord::Schema.define(version: 20141029210231) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20141023204623) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "category_id"
+    t.integer  "duration"
   end
 
   add_index "timelogs", ["category_id"], name: "index_timelogs_on_category_id"
