@@ -37,31 +37,16 @@ class Category < ActiveRecord::Base
   end
 
   def self.summarize(options)
-    summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| h3[k3]=0 } } }
-    @sortedTimelog = Timelog.where(:time => options[:range]).order("time desc")
-
-    @prevDayTimelog = Timelog.where(:time => options[:range].begin-1.day..options[:range].end-1.day).order("time desc")
-
-    summary[:head][:prev][:time] = @prevDayTimelog.first.time 
-    summary[:head][:prev][:cat] = @prevDayTimelog.first.category_id
-    
-    summary[:head][:range][:start] = options[:range].begin
-    summary[:head][:range][:end] = options[:range].end
-    
-    if !@sortedTimelog.empty?      
+    summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| } } }
+    summary[:head][:range][:begin] = options[:begin]
+    summary[:head][:range][:end] = options[:end]
+    summary[:head][:prev][:remaining] = 0
+    summary[:total][:total][:inseconds] = 0
       
-      #get total days observed
-      summary[:total][:total][:day] = 1
-      curday = @sortedTimelog.first.time.midnight
-      @sortedTimelog.each do |timelog|
-        logday = timelog.time.midnight
-        if logday != curday
-          curday = logday
-          summary[:total][:total][:day] += 1
-        end
-      end
-      
-      summary[:total][:total][:seconds] = 0
+    @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
+    
+    if !@sortedTimelog.empty?            
+
       Category.all.each do |category|      
         summary[:row][category.id][:duration] = 0
         
@@ -75,13 +60,23 @@ class Category < ActiveRecord::Base
             end
           end
         end
-        summary[:total][:total][:seconds] += summary[:row][category.id][:duration]          
+        summary[:total][:total][:inseconds] += summary[:row][category.id][:duration]          
       end
-      
-      summary[:head][:prev][:remaining] = @sortedTimelog.first.time - @sortedTimelog.first.time.midnight
-      summary[:row][summary[:head][:prev][:cat]][:duration] += summary[:head][:prev][:remaining]
-      summary[:total][:total][:seconds] += summary[:head][:prev][:remaining]
 
+      summary[:head][:prev][:remaining] = @sortedTimelog.last.time - @sortedTimelog.last.time.midnight
+      if summary[:head][:prev][:remaining] > 0
+        @prevDayTimelog = Timelog.where('time < ?', options[:begin]).order("time desc")
+        if !@prevDayTimelog.empty? 
+          summary[:head][:prev][:time] = @prevDayTimelog.first.time 
+          summary[:head][:prev][:cat] = @prevDayTimelog.first.category_id    
+          summary[:row][summary[:head][:prev][:cat]][:duration] += summary[:head][:prev][:remaining]
+          summary[:total][:total][:inseconds] += summary[:head][:prev][:remaining]
+        end
+      end
+
+      summary[:total][:total][:days] = summary[:total][:total][:inseconds] / 86400
+      summary[:total][:total][:hours] = (summary[:total][:total][:inseconds] - 86400*summary[:total][:total][:days]) / 3600
+      summary[:total][:total][:minutes] = (summary[:total][:total][:inseconds] - 86400*summary[:total][:total][:days] - 3600*summary[:total][:total][:hours]) / 60
     end #if not empty
     summary
   end

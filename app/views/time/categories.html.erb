@@ -4,8 +4,8 @@
 </p>
 
 <%= form_tag time_categories_path, multipart: true do %>
-  <%= label(:time, :start) %>
-  <%= date_select("time","start", selected: @summary[:head][:range][:start]) %>
+  <%= label(:time, :begin) %>
+  <%= date_select("time","begin", selected: @summary[:head][:range][:begin]) %>
   <br />
   <%= label(:time, :end) %>
   <%= date_select("time","end", selected: @summary[:head][:range][:end]) %>
@@ -14,22 +14,32 @@
 <% end %>
 
 <p>
-<%= link_to "Today", time_categories_path(start: Time.now.strftime('%Y-%m-%d 00:00'),end: Time.now.strftime('%Y-%m-%d 23:59')), method: :post %>
-<%= link_to "Yesterday", time_categories_path(start: ((Time.now)-1.day).strftime('%Y-%m-%d 00:00'),end: ((Time.now)-1.day).strftime('%Y-%m-%d 23:59')), method: :post %>
-<%= link_to "Last week", time_categories_path(start: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Today", time_categories_path(begin: Time.now.strftime('%Y-%m-%d 00:00'),end: Time.now.strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Yesterday", time_categories_path(begin: ((Time.now)-1.day).strftime('%Y-%m-%d 00:00'),end: ((Time.now)-1.day).strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Last week", time_categories_path(begin: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
 </p>
 
 <p>
-total day is <%= @summary[:total][:total][:day] %><br />
-total time is <%= Time.at(@summary[:total][:total][:seconds]).utc.strftime('%H:%M:%S') %><br />
-<%= @summary[:head][:prev][:remaining] %> <br />
-<%= @summary[:head][:prev][:time] %> <br />
-<%= Category.find_by_id(@summary[:head][:prev][:cat]).name %>
+
+<!--
+begin day is <%= @summary[:head][:range][:begin] %><br />
+end day is <%= @summary[:head][:range][:end] %><br />
+<% if @summary[:head][:prev][:remaining] > 0 %>
+remaining is <%= @summary[:head][:prev][:remaining] %><br />
+remaining is category <%= Category.find_by_id(@summary[:head][:prev][:cat]).name %><br />
+remaining was from <%= @summary[:head][:prev][:time] %><br />
+<% end %>
+-->
+
+<%= @summary[:total][:total][:inseconds] %>  (<%= distance_of_time_in_words(@summary[:total][:total][:inseconds]) %>)
+<%= @summary[:total][:total][:days] %> days 
+<%= @summary[:total][:total][:hours] %> hours 
+<%= @summary[:total][:total][:minutes] %> minutes
 </p>
 
 <% @summary[:row].sort_by{|k,v| v[:duration]}.reverse.each do |k,v| %>
-  <%= number_to_percentage(v[:duration].to_f/@summary[:total][:total][:seconds].to_f*100,precision: 0) %> 
-  <%= (((v[:duration].to_f/@summary[:total][:total][:day].to_f/3600)*100).to_i).to_f/100 %> hours per day 
+  <%= number_to_percentage(v[:duration].to_f/@summary[:total][:total][:inseconds].to_f*100,precision: 0) %> 
+  <%= (((v[:duration].to_f/@summary[:total][:total][:days].to_f/3600)*100).to_i).to_f/100 %> hours per day 
   <%= link_to Category.find_by_id(k).name, category_path(Category.find_by_id(k)) %> 
   <br />
 <% end %>

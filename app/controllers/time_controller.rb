@@ -3,29 +3,28 @@ class TimeController < ApplicationController
 
   def categories
     if(params.has_key?(:time))
-      params[:start] = params["time"]["start(1i)"]+params["time"]["start(2i)"]+params["time"]["start(3i)"]+" 00:00"
+      params[:begin] = params["time"]["begin(1i)"]+params["time"]["begin(2i)"]+params["time"]["begin(3i)"]+" 00:00"
       params[:end] = params["time"]["end(1i)"]+params["time"]["end(2i)"]+params["time"]["end(3i)"]+" 23:59"
     end
-    params[:end] ||= Time.zone.now.strftime('%Y-%m-%d 00:00')
-    params[:start] ||= (Time.zone.now-1.week).strftime('%Y-%m-%d 23:59')
+    params[:begin] ||= (Time.zone.now-1.week).strftime('%Y-%m-%d 00:00')
+    params[:end] ||= Time.zone.now.strftime('%Y-%m-%d 23:59')
 
-    @summary_start = Time.zone.parse(params[:start])
+    @summary_begin = Time.zone.parse(params[:begin])
     @summary_end = Time.zone.parse(params[:end])
-    range = @summary_start..@summary_end
-    @summary = Category.summarize(:range => range)
+    @summary = Category.summarize(:begin => @summary_begin, :end => @summary_end)    
     respond_with @summary
   end
   def timelogs
     if(params.has_key?(:time))
-      params[:start] = params["time"]["start(1i)"]+params["time"]["start(2i)"]+params["time"]["start(3i)"]+" 00:00"
+      params[:begin] = params["time"]["begin(1i)"]+params["time"]["begin(2i)"]+params["time"]["begin(3i)"]+" 00:00"
       params[:end] = params["time"]["end(1i)"]+params["time"]["end(2i)"]+params["time"]["end(3i)"]+" 23:59"
     end
-    params[:end] ||= Time.zone.now.strftime('%Y-%m-%d 00:00')
-    params[:start] ||= (Time.zone.now-1.week).strftime('%Y-%m-%d 23:59')
+    params[:begin] ||= (Time.zone.now-1.week).strftime('%Y-%m-%d 00:00')
+    params[:end] ||= Time.zone.now.strftime('%Y-%m-%d 23:59')
 
-    @summary_start = Time.zone.parse(params[:start])
+    @summary_begin = Time.zone.parse(params[:begin])
     @summary_end = Time.zone.parse(params[:end])
-    range = @summary_start..@summary_end
+    range = @summary_begin..@summary_end
     @summary = Timelog.summarize(:range => range)
     respond_with @summary
   end
