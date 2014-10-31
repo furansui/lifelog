@@ -5,18 +5,7 @@
 </p>
 
 <% @timelogs.order("time desc").each do |timelog| %>
-  <%= timelog.time %>
-  <%= timelog.category_id %>
-  <% category = Category.find_by_id(timelog.category_id) %>
-  <% if category %>
-    <strong><%= link_to category.name, category_path(category) %></strong>
-  <% end %>
-  <%= timelog.event %> 
-  
-  <%= link_to 'Show', timelog_path(timelog) %> 
-  <%= link_to 'Edit', edit_timelog_path(timelog) %> 
-  <%= link_to 'Delete', timelog_path(timelog), method: :delete, data: { confirm: 'Are you sure?' } %>
-</br>
+  <%= render timelog %>
 <% end %>
 
 <h2>Import CSV</h2>

@@ -21,12 +21,15 @@
 
 <p>
 total day is <%= @summary[:total][:total][:day] %><br />
-total hours is <%= @summary[:total][:total][:hour].to_f/60 %><br />
+total time is <%= Time.at(@summary[:total][:total][:seconds]).utc.strftime('%H:%M:%S') %><br />
+<%= @summary[:head][:prev][:remaining] %> <br />
+<%= @summary[:head][:prev][:time] %> <br />
+<%= Category.find_by_id(@summary[:head][:prev][:cat]).name %>
 </p>
 
 <% @summary[:row].sort_by{|k,v| v[:duration]}.reverse.each do |k,v| %>
-  <%= number_to_percentage(v[:duration].to_f/@summary[:total][:total][:hour].to_f*100,precision: 0) %> 
-  <%= (((v[:duration].to_f/@summary[:total][:total][:day].to_f/60)*100).to_i).to_f/100 %> hours per day 
+  <%= number_to_percentage(v[:duration].to_f/@summary[:total][:total][:seconds].to_f*100,precision: 0) %> 
+  <%= (((v[:duration].to_f/@summary[:total][:total][:day].to_f/3600)*100).to_i).to_f/100 %> hours per day 
   <%= link_to Category.find_by_id(k).name, category_path(Category.find_by_id(k)) %> 
   <br />
 <% end %>

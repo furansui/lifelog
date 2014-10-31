@@ -40,44 +40,50 @@ class Category < ActiveRecord::Base
     summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| h3[k3]=0 } } }
     @sortedTimelog = Timelog.where(:time => options[:range]).order("time desc")
 
+    @prevDayTimelog = Timelog.where(:time => options[:range].begin-1.day..options[:range].end-1.day).order("time desc")
+
+    summary[:head][:prev][:time] = @prevDayTimelog.first.time 
+    summary[:head][:prev][:cat] = @prevDayTimelog.first.category_id
+    
     summary[:head][:range][:start] = options[:range].begin
     summary[:head][:range][:end] = options[:range].end
-
+    
     if !@sortedTimelog.empty?      
-
-    #get total days observed
-    summary[:total][:total][:day] = 1
-    curday = @sortedTimelog.first.time.midnight
-    @sortedTimelog.each do |timelog|
-      logday = timelog.time.midnight
-      if logday != curday
-        curday = logday
-        summary[:total][:total][:day] += 1
-      end
-    end
       
-    summary[:total][:total][:hour] = 0
-    Category.all.each do |category|      
-      summary[:row][category.id][:duration] = 0
-
-      @sortedTimelog.each_with_index do |timelog,index|            
-        if timelog.category_id == category.id
-          #first timelog
-          if index == 0
-            if @sortedTimelog.first == Timelog.all.order("time desc").first
-              summary[:row][category.id][:duration] += (Time.now - timelog.time).to_i/60
-            else
-              summary[:row][category.id][:duration] += ((timelog.time + 1.day).midnight - timelog.time).to_i/60
-            end
-          else
-            summary[:row][category.id][:duration] += (@sortedTimelog[index-1].time - timelog.time).to_i/60
-          end
+      #get total days observed
+      summary[:total][:total][:day] = 1
+      curday = @sortedTimelog.first.time.midnight
+      @sortedTimelog.each do |timelog|
+        logday = timelog.time.midnight
+        if logday != curday
+          curday = logday
+          summary[:total][:total][:day] += 1
         end
       end
-      summary[:total][:total][:hour] += summary[:row][category.id][:duration]          
-    end
+      
+      summary[:total][:total][:seconds] = 0
+      Category.all.each do |category|      
+        summary[:row][category.id][:duration] = 0
+        
+        @sortedTimelog.each_with_index do |timelog,index|            
+          if timelog.category_id == category.id
+            #most recent timelog, cut off at midnight
+            if index==0
+              summary[:row][category.id][:duration] += (timelog.time + 1.day).midnight-timelog.time
+            else
+              summary[:row][category.id][:duration] += timelog.duration
+            end
+          end
+        end
+        summary[:total][:total][:seconds] += summary[:row][category.id][:duration]          
+      end
+      
+      summary[:head][:prev][:remaining] = @sortedTimelog.first.time - @sortedTimelog.first.time.midnight
+      summary[:row][summary[:head][:prev][:cat]][:duration] += summary[:head][:prev][:remaining]
+      summary[:total][:total][:seconds] += summary[:head][:prev][:remaining]
+
     end #if not empty
     summary
   end
-
+  
 end

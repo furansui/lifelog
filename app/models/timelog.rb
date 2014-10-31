@@ -10,8 +10,14 @@ class Timelog < ActiveRecord::Base
   end
 
   def self.duration()
-    Timelog.all.order("time desc").each do |timelog|
-      
+    @timelogs = Timelog.all.order("time desc")
+    @timelogs.each_with_index do |timelog,index|
+      if index==0
+        timelog.duration = Time.zone.now - timelog.time
+      else
+        timelog.duration =  @timelogs[index-1].time - timelog.time
+      end
+      timelog.save
     end
   end
 
@@ -48,6 +54,7 @@ class Timelog < ActiveRecord::Base
       timelog = Timelog.new(time: row_hash["time"], event: row_hash["event"], category_id: id)
       timelog.save!
     end                
+    self.duration()
   end
 
   def self.summarize(options)
@@ -64,12 +71,5 @@ class Timelog < ActiveRecord::Base
       summary[:row][index][:timelog] = timelog
     end
     summary
-  end
-
-  def self.process() 
-    @sortedTimelog = Timelog.where(:time => options[:range]).order("time desc")
-    @sortedTimelog.each_with_index do |timelog,index|
-      timelog.duration = 1.hour
-    end
   end
 end

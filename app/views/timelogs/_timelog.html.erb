@@ -1,3 +1,7 @@
-<%= timelog.time %> <%= timelog.event %>
+<%= timelog.time %> (<%= Time.at(timelog.duration).utc.strftime("%H:%M:%S") %>) 
+<% category = Category.find_by_id(timelog.category_id) %>
+<%= link_to category.name, category_path(category) %> 
+<%= timelog.event %>
 <%= link_to 'Show', timelog_path(timelog) %> 
-<%= link_to 'Edit', edit_timelog_path(timelog) %> <br />
+<%= link_to 'Edit', edit_timelog_path(timelog) %>
+<%= link_to 'Delete', timelog_path(timelog), method: :delete, data: { confirm: 'Are you sure?' } %> <br />

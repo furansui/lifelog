@@ -1,10 +1,5 @@
 <p>
-  <strong><%= @timelog.event %></strong> <i>at</i> <%= @timelog.time %>
-  <% if @category %>
-    <%= link_to @category.name, category_path(@category) %>  
-  <% else %>
-    <strong>category not found </strong>
-  <% end %>
+  <%= render @timelog %>
 </p>
 
 <%= link_to 'Back', timelogs_path %>
