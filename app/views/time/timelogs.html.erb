@@ -4,8 +4,8 @@
 </p>
 
 <%= form_tag time_timelogs_path, multipart: true do %>
-  <%= label(:time, :start) %>
-  <%= date_select("time","start", selected: @summary[:head][:range][:start]) %>
+  <%= label(:time, :begin) %>
+  <%= date_select("time","begin", selected: @summary[:head][:range][:begin]) %>
   <br />
   <%= label(:time, :end) %>
   <%= date_select("time","end", selected: @summary[:head][:range][:end]) %>
@@ -14,9 +14,9 @@
 <% end %>
 
 <p>
-<%= link_to "Today", time_timelogs_path(start: Time.now.strftime('%Y-%m-%d 00:00'),end: Time.now.strftime('%Y-%m-%d 23:59')), method: :post %>
-<%= link_to "Yesterday", time_timelogs_path(start: ((Time.now)-1.day).strftime('%Y-%m-%d 00:00'),end: ((Time.now)-1.day).strftime('%Y-%m-%d 23:59')), method: :post %>
-<%= link_to "Last week", time_timelogs_path(start: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Today", time_timelogs_path(begin: Time.now.strftime('%Y-%m-%d 00:00'),end: Time.now.strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Yesterday", time_timelogs_path(begin: ((Time.now)-1.day).strftime('%Y-%m-%d 00:00'),end: ((Time.now)-1.day).strftime('%Y-%m-%d 23:59')), method: :post %>
+<%= link_to "Last week", time_timelogs_path(begin: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
 </p>
 
 <% @summary[:row].sort.each do |k,v| %>

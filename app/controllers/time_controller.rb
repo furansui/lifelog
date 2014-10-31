@@ -24,8 +24,7 @@ class TimeController < ApplicationController
 
     @summary_begin = Time.zone.parse(params[:begin])
     @summary_end = Time.zone.parse(params[:end])
-    range = @summary_begin..@summary_end
-    @summary = Timelog.summarize(:range => range)
+    @summary = Timelog.summarize(:begin => @summary_begin, :end => @summary_end)    
     respond_with @summary
   end
 
