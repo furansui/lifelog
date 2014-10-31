@@ -3,7 +3,7 @@ Lifelog::Application.routes.draw do
   get "home/index"
 
   get "time/categories"
-
+  get "time/list"
   match "time/timelogs" => "time#timelogs", via: [:get, :post]
   match "time/categories" => "time#categories", via: [:get, :post]
 

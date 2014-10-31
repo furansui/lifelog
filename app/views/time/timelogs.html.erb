@@ -1,3 +1,33 @@
+<%= javascript_include_tag "d3/d3.min.js" %>
+
+
+<script>
+var spaceCircles = [30, 70, 110];
+
+var timelogs = <%= @summary.to_json.html_safe %>
+
+var svgContainer = d3.select("body").append("svg")
+                                    .attr("width", 200)
+                                    .attr("height", 200);
+
+var circles = svgContainer.selectAll("circle")
+                          .data(spaceCircles)
+                          .enter()
+                          .append("circle");
+
+var circleAttributes = circles
+                       .attr("cx", function (d) { return d; })
+                       .attr("cy", function (d) { return d; })
+                       .attr("r", 20 )
+                       .style("fill", function(d) {
+                         var returnColor;
+                         if (d === 30) { returnColor = "green";
+                         } else if (d === 70) { returnColor = "purple";
+                         } else if (d === 110) { returnColor = "red"; }
+                         return returnColor;
+                       });
+</script>
+
 <p>
 <%= link_to 'Home', root_path %>
 <%= link_to 'Category', time_categories_path %>
@@ -19,9 +49,9 @@
 <%= link_to "Last week", time_timelogs_path(begin: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
 </p>
 
-<% @summary[:row].sort.each do |k,v| %>
+<% @summary[:row].sort_by{|k,v| v[:timelog].time}.reverse.each do |k,v| %>
   <%= v[:timelog].time %>
-  <%= v[:duration] %>
+  <%= v[:timelog].duration/60 %>
   <%= v[:timelog].event %>
   <br />
 <% end %>

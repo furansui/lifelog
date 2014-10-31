@@ -66,11 +66,22 @@ class Timelog < ActiveRecord::Base
    
     if !@sortedTimelog.empty?            
       @sortedTimelog.each_with_index do |timelog,index|        
-        if index != 0
-          summary[:row][index][:duration] = (@sortedTimelog[index-1].time - timelog.time).to_i/60
-        end
         summary[:row][index][:timelog] = timelog
+        if index == 0
+          summary[:row][index][:timelog].duration = (timelog.time.end_of_day - timelog.time).to_i
+        end
       end
+
+      summary[:head][:prev][:remaining] = @sortedTimelog.last.time - @sortedTimelog.last.time.midnight
+      if summary[:head][:prev][:remaining] > 0
+        @prevDayTimelog = Timelog.where('time < ?', options[:begin]).order("time desc")
+        if !@prevDayTimelog.empty? 
+          summary[:row][-1][:timelog] = @prevDayTimelog.first
+          summary[:row][-1][:timelog].duration = summary[:head][:prev][:remaining]
+          summary[:row][-1][:timelog].time = @sortedTimelog.last.time.midnight
+        end
+      end
+
     end #if not empty
     summary
   end

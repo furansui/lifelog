@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TimeController < ApplicationController
   respond_to :html
 
@@ -14,6 +15,7 @@ class TimeController < ApplicationController
     @summary = Category.summarize(:begin => @summary_begin, :end => @summary_end)    
     respond_with @summary
   end
+
   def timelogs
     if(params.has_key?(:time))
       params[:begin] = params["time"]["begin(1i)"]+params["time"]["begin(2i)"]+params["time"]["begin(3i)"]+" 00:00"
@@ -26,6 +28,24 @@ class TimeController < ApplicationController
     @summary_end = Time.zone.parse(params[:end])
     @summary = Timelog.summarize(:begin => @summary_begin, :end => @summary_end)    
     respond_with @summary
+  end
+
+  def list
+    data = [
+            {
+              "letter" => "A",
+              "frequency" => ".08167"
+            },
+            {
+              "letter" => "B",
+              "frequency" => ".01492"
+            },
+            {
+              "letter" => "Z",
+              "frequency" => ".00074"
+            }
+           ]
+    render :json => data
   end
 
 end
