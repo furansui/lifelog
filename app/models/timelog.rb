@@ -65,20 +65,26 @@ class Timelog < ActiveRecord::Base
     @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
    
     if !@sortedTimelog.empty?            
+      summary[:row] = Array.new
       @sortedTimelog.each_with_index do |timelog,index|        
-        summary[:row][index][:timelog] = timelog
+        thisrow = Hash.new
+        thisrow[:index] = index
+        thisrow[:timelog] = timelog
         if index == 0
-          summary[:row][index][:timelog].duration = (timelog.time.end_of_day - timelog.time).to_i
+          thisrow[:timelog].duration = (timelog.time.end_of_day - timelog.time).to_i
         end
+        summary[:row] << thisrow
       end
 
       summary[:head][:prev][:remaining] = @sortedTimelog.last.time - @sortedTimelog.last.time.midnight
       if summary[:head][:prev][:remaining] > 0
         @prevDayTimelog = Timelog.where('time < ?', options[:begin]).order("time desc")
         if !@prevDayTimelog.empty? 
-          summary[:row][-1][:timelog] = @prevDayTimelog.first
-          summary[:row][-1][:timelog].duration = summary[:head][:prev][:remaining]
-          summary[:row][-1][:timelog].time = @sortedTimelog.last.time.midnight
+          thisrow = Hash.new
+          thisrow[:timelog] = @prevDayTimelog.first
+          thisrow[:timelog].duration = summary[:head][:prev][:remaining]
+          thisrow[:timelog].time = @sortedTimelog.last.time.midnight
+          summary[:row] << thisrow
         end
       end
 
