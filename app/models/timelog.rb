@@ -61,10 +61,15 @@ class Timelog < ActiveRecord::Base
     summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| h3[k3]=0 } } }
     summary[:head][:range][:begin] = options[:begin]
     summary[:head][:range][:end] = options[:end]
+    summary[:head][:total][:inseconds] = 0 #number of total duration
+    summary[:head][:total][:days] = 0 #indicates number of days to show on graph
 
     @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
-   
     if !@sortedTimelog.empty?            
+      currentDay = @sortedTimelog.first.time.beginning_of_day;
+      currentDayi = 1;
+      dayAccum = 0;
+
       summary[:row] = Array.new
       @sortedTimelog.each_with_index do |timelog,index|        
         thisrow = Hash.new
@@ -74,6 +79,17 @@ class Timelog < ActiveRecord::Base
           thisrow[:timelog].duration = (timelog.time.end_of_day - timelog.time).to_i
         end
         summary[:row] << thisrow
+
+        if timelog.time.beginning_of_day != currentDay
+          currentDayi += 1
+          currentDay = timelog.time.beginning_of_day
+          dayAccum = 0
+        end
+        dayAccum += thisrow[:timelog].duration
+        thisrow[:dayaccum] = dayAccum
+        thisrow[:day] = currentDayi #indicates the day this record belong to on the graph        
+        #accumulative of this day
+        summary[:head][:total][:inseconds] += thisrow[:timelog].duration
       end
 
       summary[:head][:prev][:remaining] = @sortedTimelog.last.time - @sortedTimelog.last.time.midnight
@@ -87,6 +103,7 @@ class Timelog < ActiveRecord::Base
           summary[:row] << thisrow
         end
       end
+      summary[:head][:total][:days] = currentDayi
 
     end #if not empty
     summary
