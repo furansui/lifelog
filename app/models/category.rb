@@ -5,6 +5,8 @@ class Category < ActiveRecord::Base
   validates_uniqueness_of :shortcut, allow_blank: true
   belongs_to :parent, class_name: 'Category'
 
+  acts_as_tree_with_dotted_ids
+
   before_save do
     self.name = self.name.downcase
     if !self.shortcut.blank?
@@ -37,10 +39,16 @@ class Category < ActiveRecord::Base
     end                
   end
 
-  def self.get_parents(who)
-    
+  #get all ancestors
+  def get_ancestors()
+    unless self.parent_id.nil?
+      yield self
+    else
+      Category.find_by_id(child.parent_id).get_ancestors() 
+    end
   end
-
+   
+  #time view
   def self.summarize(options)
     summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| } } }
     summary[:head][:range][:begin] = options[:begin]
@@ -49,6 +57,8 @@ class Category < ActiveRecord::Base
     summary[:head][:total][:inseconds] = 0
       
     @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
+
+    summary[:head][:parent][:parent] = Category.last.self_and_ancestors #Category.last.get_ancestors() {|c| puts c}
     
     if !@sortedTimelog.empty?            
       Category.all.each do |category|      

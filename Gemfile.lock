@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/xavier/acts-as-tree-with-dotted-ids.git
+  revision: d25f26502ab4963a60e3ff73459e715d63cb6c02
+  specs:
+    acts-as-tree-with-dotted-ids (1.0.0)
+      activerecord (>= 3.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -107,6 +114,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acts-as-tree-with-dotted-ids!
   coffee-rails (~> 4.0.0)
   jbuilder (~> 1.2)
   jquery-rails
