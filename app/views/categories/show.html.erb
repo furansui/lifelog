@@ -17,7 +17,8 @@
 <% if @category.parent_id %>
 <p>
   <strong>Parent:</strong>
-  <%= Category.find_by_id(@category.parent_id).name %>
+  <% parent = Category.find_by_id(@category.parent_id) %>
+  <%= link_to parent.name, category_path(parent)  %>
 </p>
 <% end %>
 

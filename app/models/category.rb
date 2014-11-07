@@ -58,11 +58,11 @@ class Category < ActiveRecord::Base
       
     @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
 
-    summary[:head][:parent][:parent] = Category.last.self_and_ancestors #Category.last.get_ancestors() {|c| puts c}
-    
     if !@sortedTimelog.empty?            
       Category.all.each do |category|      
         summary[:row][category.id][:duration] = 0       
+        summary[:row][category.id][:parent] = category.self_and_ancestors     
+
         @sortedTimelog.each_with_index do |timelog,index|            
           if timelog.category_id == category.id
             #most recent timelog, cut off at midnight

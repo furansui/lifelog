@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141029210231) do
+ActiveRecord::Schema.define(version: 20141106190739) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20141029210231) do
     t.datetime "updated_at"
     t.string   "shortcut"
     t.integer  "parent_id"
+    t.string   "dotted_ids"
   end
 
   add_index "categories", ["parent_id"], name: "index_categories_on_parent_id"
