@@ -38,18 +38,11 @@ class Category < ActiveRecord::Base
       end
     end                
   end
-
-  #get all ancestors
-  def get_ancestors()
-    unless self.parent_id.nil?
-      yield self
-    else
-      Category.find_by_id(child.parent_id).get_ancestors() 
-    end
-  end
    
   #time view
   def self.summarize(options)
+    #Category.rebuild_dotted_ids!
+
     summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| } } }
     summary[:head][:range][:begin] = options[:begin]
     summary[:head][:range][:end] = options[:end]
@@ -59,9 +52,9 @@ class Category < ActiveRecord::Base
     @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
 
     if !@sortedTimelog.empty?            
-      Category.all.each do |category|      
+      Category.where(parent_id: nil).each do |category|      
         summary[:row][category.id][:duration] = 0       
-        summary[:row][category.id][:parent] = category.self_and_ancestors     
+        summary[:row][category.id][:parent] = category.dotted_ids #category.all_children.length #category.self_and_ancestors     
 
         @sortedTimelog.each_with_index do |timelog,index|            
           if timelog.category_id == category.id
@@ -82,7 +75,8 @@ class Category < ActiveRecord::Base
         if !@prevDayTimelog.empty? 
           summary[:head][:prev][:time] = @prevDayTimelog.first.time 
           summary[:head][:prev][:cat] = @prevDayTimelog.first.category_id    
-          summary[:row][summary[:head][:prev][:cat]][:duration] += summary[:head][:prev][:remaining]
+          #summary[:row][summary[:head][:prev][:cat]][:duration] ||= 0          
+          #summary[:row][summary[:head][:prev][:cat]][:duration] += summary[:head][:prev][:remaining]
           summary[:head][:total][:inseconds] += summary[:head][:prev][:remaining]
         end
       end
@@ -90,7 +84,7 @@ class Category < ActiveRecord::Base
       summary[:head][:total][:days] = summary[:head][:total][:inseconds] / 86400
       summary[:head][:total][:hours] = (summary[:head][:total][:inseconds] - 86400*summary[:head][:total][:days]) / 3600
       summary[:head][:total][:minutes] = (summary[:head][:total][:inseconds] - 86400*summary[:head][:total][:days] - 3600*summary[:head][:total][:hours]) / 60
-    end #if not empty
+    end
     summary
   end
   
