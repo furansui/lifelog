@@ -31,15 +31,16 @@ remaining was from <%= @summary[:head][:prev][:time] %><br />
 <% end %>
 
 <%= @summary[:head][:total][:inseconds] %>  (<%= distance_of_time_in_words(@summary[:head][:total][:inseconds]) %>)
-<%= @summary[:head][:total][:days] %> days 
-<%= @summary[:head][:total][:hours] %> hours 
-<%= @summary[:head][:total][:minutes] %> minutes
+<%= Category.secondsToString(@summary[:head][:total][:inseconds]) %>
 </p>
 
-<% @summary[:row].sort_by{|k,v| v[:duration]}.reverse.each do |k,v| %>
-  <%= number_to_percentage(v[:duration].to_f/@summary[:head][:total][:inseconds].to_f*100,precision: 0) %> 
-  <%= (((v[:duration].to_f/@summary[:head][:total][:days].to_f/3600)*100).to_i).to_f/100 %> hours per day 
-  <%= link_to Category.find_by_id(k).name, category_path(Category.find_by_id(k)) %> 
-  <%= v[:parent] %>
-  <br />
+<% @summary[:category].each do |k,v| %>
+  <%= v[:name] %> <%= Category.secondsToString(v[:summary][:duration]) %> 
+  <ul>
+  <% v.drop(2).each do |k2,v2| %>
+    <li>
+      <%= k2 %> <%= v2[:name] %> <%= Category.secondsToString(v2[:duration]) %>
+    </li>
+  <% end %>
+  </ul>
 <% end %>

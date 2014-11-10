@@ -24,7 +24,7 @@
   </p>
   <p>
     <%= f.label :parent %>
-    <%= f.select :parent_id, options_for_select(["none",],Category.all.map{|c|[c.name, c.id]}) %>
+    <%= f.select :parent_id, options_for_select(Category.all.collect{|c|[c.name, c.id]}.insert(0,"none")) %>
   </p>
   <p>
     <%= f.submit %>
