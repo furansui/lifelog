@@ -30,16 +30,22 @@ remaining is category <%= Category.find_by_id(@summary[:head][:prev][:cat]).name
 remaining was from <%= @summary[:head][:prev][:time] %><br />
 <% end %>
 
+<% if @summary[:head][:prev][:timelog] %>
+<%= @summary[:head][:prev][:timelog].event %> <br />
+<%= @summary[:head][:prev][:duration] %> <br />
+<% end %>
+
 <%= @summary[:head][:total][:inseconds] %>  (<%= distance_of_time_in_words(@summary[:head][:total][:inseconds]) %>)
 <%= Category.secondsToString(@summary[:head][:total][:inseconds]) %>
 </p>
 
 <% @summary[:category].each do |k,v| %>
-  <%= v[:name] %> <%= Category.secondsToString(v[:summary][:duration]) %> 
+  <%= v[k][:name] %>
+  <%= (v[k][:duration]) %>
   <ul>
-  <% v.drop(2).each do |k2,v2| %>
+  <% v.drop(1).each do |k2,v2| %>
     <li>
-      <%= k2 %> <%= v2[:name] %> <%= Category.secondsToString(v2[:duration]) %>
+      <%= k2 %> <%= v2[:name] %> <%= (v2[:duration]) %>
     </li>
   <% end %>
   </ul>

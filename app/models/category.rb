@@ -78,54 +78,23 @@ class Category < ActiveRecord::Base
     summary[:head][:prev][:remaining] = 0
     summary[:head][:total][:inseconds] = 0
 
+    summary[:head][:prev][:timelog] = Timelog.where("time < ?",options[:begin]).order("time desc").first
+    summary[:head][:prev][:duration] = Timelog.where("time >= ?",options[:begin]).order("time").first.time-Timelog.where("time >= ?",options[:begin]).order("time").first.time.beginning_of_day
+
     Category.where(parent_id: nil).each do |category|
-      summary[:category][category.id][:name] = category.name      
-      summary[:category][category.id][:summary] = category.sum_up(options)
-      category.all_children.each do |childcategory|
+      category.self_and_all_children.each do |childcategory|
         summary[:category][category.id][childcategory.id] = childcategory.sum_up(options)
       end
-      summary[:head][:total][:inseconds] += summary[:category][category.id][:summary][:duration]
+      summary[:head][:total][:inseconds] += summary[:category][category.id][category.id][:duration]
     end
-      
-#    @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time desc")
-#
-#    if !@sortedTimelog.empty?            
-#      Category.where(parent_id: nil).each do |category|      
-#        summary[:row][category.id][:duration] = 0       
-#        summary[:row][category.id][:parent] = category.id.to_s #category.all_children #category.all_children.length #category.self_and_ancestors     
-#
-#        category.all_children.each do |childcategory| 
-#          summary[:row][category.id][:parent] += childcategory.id.to_s
-#          summary[:row][category.id][childcategory.id] = 0
-#          @sortedTimelog.each_with_index do |timelog,index|            
-#            if timelog.category_id == childcategory.id
-#              #most recent timelog, cut off at midnight
-#              if index==0
-#                summary[:row][category.id][:duration] += (timelog.time + 1.day).midnight-timelog.time
-#              else
-#                summary[:row][category.id][:duration] += timelog.duration
-#                summary[:row][category.id][childcategory.id] += timelog.duration
-#              end
-#            end
-#          end
-#        end
-#        summary[:head][:total][:inseconds] += summary[:row][category.id][:duration]          
-#      end
-#
-#      summary[:head][:prev][:remaining] = @sortedTimelog.last.time - @sortedTimelog.last.time.midnight
-#      if summary[:head][:prev][:remaining] > 0
-#        @prevDayTimelog = Timelog.where('time < ?', options[:begin]).order("time desc")
-#        if !@prevDayTimelog.empty? 
-#          summary[:head][:prev][:time] = @prevDayTimelog.first.time 
-#          summary[:head][:prev][:cat] = @prevDayTimelog.first.category_id    
-#          #summary[:row][summary[:head][:prev][:cat]][:duration] ||= 0          
-#          #summary[:row][summary[:head][:prev][:cat]][:duration] += summary[:head][:prev][:remaining]
-#          summary[:head][:total][:inseconds] += summary[:head][:prev][:remaining]
-#        end
-#      end
-#
-#    end
 
+    if summary[:head][:prev][:timelog]
+      Category.find_by_id(summary[:head][:prev][:timelog].category_id).self_and_ancestors.each do |ancestor|
+        summary[:category][ancestor.root.id][ancestor.id][:duration] += summary[:head][:prev][:duration]
+      end
+      summary[:head][:total][:inseconds] += summary[:head][:prev][:duration]
+    end        
+      
     summary[:head][:total][:days] = summary[:head][:total][:inseconds] / 86400
     summary[:head][:total][:hours] = (summary[:head][:total][:inseconds] - 86400*summary[:head][:total][:days]) / 3600
     summary[:head][:total][:minutes] = (summary[:head][:total][:inseconds] - 86400*summary[:head][:total][:days] - 3600*summary[:head][:total][:hours]) / 60    
