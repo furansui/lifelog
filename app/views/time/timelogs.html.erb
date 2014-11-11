@@ -17,6 +17,7 @@
 
  bar.append("rect")
     .attr('class', 'bar')
+    .style("fill", function(d) {return d.color})
     .attr("width", function(d) {return d.timelog.duration/3600*width/24;})
     .attr("height", barHeight - 1);
  bar.append("text")

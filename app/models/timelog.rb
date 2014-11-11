@@ -74,6 +74,7 @@ class Timelog < ActiveRecord::Base
       @sortedTimelog.each_with_index do |timelog,index|        
         thisrow = Hash.new
         thisrow[:index] = index
+        thisrow[:color] = Category.find_by_id(timelog.category_id).root.color
         thisrow[:timelog] = timelog
         if index == 0
           thisrow[:timelog].duration = (timelog.time.end_of_day - timelog.time).to_i
@@ -98,6 +99,7 @@ class Timelog < ActiveRecord::Base
         if !@prevDayTimelog.empty? 
           thisrow = Hash.new
           thisrow[:timelog] = @prevDayTimelog.first
+          thisrow[:color] = Category.find_by_id(thisrow[:timelog].category_id).root.color
           thisrow[:timelog].duration = summary[:head][:prev][:remaining]
           thisrow[:timelog].time = @sortedTimelog.last.time.midnight
           summary[:row] << thisrow

@@ -6,7 +6,10 @@
 </p>
 
 <% @categories.each do |category| %>
+  
+  <span style="display: inline; background-color: <%= category.color %>;">
   <%= category.name %> <%= category.shortcut %> <%= category.notes %> 
+  </span>
   <%= link_to 'Show', category_path(category) %> 
   <%= link_to 'Edit', edit_category_path(category) %> 
   <%= link_to 'Delete', category_path(category), method: :delete, data: { confirm: 'Are you sure?' } %>
