@@ -9,11 +9,11 @@
 		 .range([0, 420]);
  var chart = d3.select("body").append("svg")
 	       .attr("width", width)
-	       .attr("height", barHeight * data.row.length  ) 
+	       .attr("height", barHeight * <%= @summary[:head][:total][:days] %> ) 
  var bar = chart.selectAll("g")
 		.data(data.row)
 			  .enter().append("g")
-			  .attr("transform", function(d, i) { return "translate(" + (width-((d.dayaccum)/3600*width/24)) + "," + i * barHeight + ")"; });  //(d.day-1)
+			  .attr("transform", function(d, i) { return "translate(" + (width-((d.dayaccum)/3600*width/24)) + "," + (d.day-1) * barHeight + ")"; });  //(d.day-1)
 
  bar.append("rect")
     .attr('class', 'bar')

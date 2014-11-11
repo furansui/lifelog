@@ -49,7 +49,9 @@ remaining was from <%= @summary[:head][:last][:timelog].time %><br />
 
 <h4> categories </h4>
 <% @summary[:category].each do |k,v| %>
+  <span style="display: inline; background-color: <%= v[k][:color] %>; padding: 5px;">
   <%= v[k][:name] %>
+  </span>
   <%= Category.secondsToString(v[k][:duration]) %>
   <ul>
   <% v.each do |k2,v2| %>

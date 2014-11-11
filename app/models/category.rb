@@ -60,6 +60,7 @@ class Category < ActiveRecord::Base
       catid = id
     end
     summed[:cat] = catid
+    summed[:color] = root.color
     logs = Timelog.where(time: options[:begin]..options[:end]).order("time desc").where("category_id IN (?)",catid)
     summed[:logs] = logs
     if logs

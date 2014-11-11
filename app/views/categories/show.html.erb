@@ -20,11 +20,13 @@
 
 
 <% if @category.parent_id %>
-<p>
-  <strong>Parent:</strong>
   <% parent = Category.find_by_id(@category.parent_id) %>
-  <%= link_to parent.name, category_path(parent)  %>
-</p>
+  <% if parent %>
+    <p>
+      <strong>Parent:</strong>
+      <%= link_to parent.name, category_path(parent)  %>
+    </p>
+  <% end %>
 <% end %>
 
 <h2>Timelogs:</h2>
