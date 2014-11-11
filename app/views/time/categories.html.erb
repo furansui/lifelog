@@ -24,28 +24,46 @@
 
 begin day is <%= @summary[:head][:range][:begin] %><br />
 end day is <%= @summary[:head][:range][:end] %><br />
-<% if @summary[:head][:prev][:time] %>
-remaining is <%= @summary[:head][:prev][:remaining] %><br />
-remaining is category <%= Category.find_by_id(@summary[:head][:prev][:cat]).name %><br />
-remaining was from <%= @summary[:head][:prev][:time] %><br />
-<% end %>
 
 <% if @summary[:head][:prev][:timelog] %>
-<%= @summary[:head][:prev][:timelog].event %> <br />
-<%= @summary[:head][:prev][:duration] %> <br />
+<h4>prev</h4>
+remaining is <%= @summary[:head][:prev][:timelog] %><br />
+remaining is <%= @summary[:head][:prev][:duration] %><br />
+remaining is category <%= Category.find_by_id(@summary[:head][:prev][:timelog].category_id).name %><br />
+remaining was from <%= @summary[:head][:prev][:timelog].time %><br />
 <% end %>
 
+<% if @summary[:head][:last][:timelog] %>
+<h4>last</h4>
+remaining is <%= @summary[:head][:last][:timelog] %><br />
+remaining is <%= @summary[:head][:last][:duration] %><br />
+last timelog end time is <%= @summary[:head][:last][:endtime] %><br />
+remaining is category <%= Category.find_by_id(@summary[:head][:last][:timelog].category_id).name %><br />
+remaining was from <%= @summary[:head][:last][:timelog].time %><br />
+<% end %>
+
+<h4> summary </h4>
 <%= @summary[:head][:total][:inseconds] %>  (<%= distance_of_time_in_words(@summary[:head][:total][:inseconds]) %>)
 <%= Category.secondsToString(@summary[:head][:total][:inseconds]) %>
 </p>
 
+<h4> categories </h4>
 <% @summary[:category].each do |k,v| %>
   <%= v[k][:name] %>
-  <%= (v[k][:duration]) %>
+  <%= Category.secondsToString(v[k][:duration]) %>
   <ul>
-  <% v.drop(1).each do |k2,v2| %>
+  <% v.each do |k2,v2| %>
     <li>
-      <%= k2 %> <%= v2[:name] %> <%= (v2[:duration]) %>
+      <%= k2 %> <%= v2[:name] %> <%= Category.secondsToString(v2[:duration]) %>
+      <ul>
+      <% v2[:logs].each do |log| %>
+	<li>
+	  <%= log.time %>
+	  (<%= Category.secondsToString(log.duration) %>)
+	  <%= log.event %>
+	</li>
+      <% end %>
+      </ul>
     </li>
   <% end %>
   </ul>

@@ -60,7 +60,8 @@ class Category < ActiveRecord::Base
       catid = id
     end
     summed[:cat] = catid
-    logs = Timelog.where("category_id IN (?) AND time >= ? AND time <= ? ", catid, options[:begin], options[:end])
+    logs = Timelog.where(time: options[:begin]..options[:end]).order("time desc").where("category_id IN (?)",catid)
+    summed[:logs] = logs
     if logs
       seconds = logs.pluck(:duration).sum
       summed[:duration] = seconds
@@ -79,7 +80,9 @@ class Category < ActiveRecord::Base
     summary[:head][:total][:inseconds] = 0
 
     summary[:head][:prev][:timelog] = Timelog.where("time < ?",options[:begin]).order("time desc").first
-    summary[:head][:prev][:duration] = Timelog.where("time >= ?",options[:begin]).order("time").first.time-Timelog.where("time >= ?",options[:begin]).order("time").first.time.beginning_of_day
+    summary[:head][:last][:timelog] = Timelog.where("time < ?",options[:end]).order("time desc").first
+    summary[:head][:first][:timelog] = Timelog.where("time >= ?",options[:begin]).order("time").first
+    summary[:head][:prev][:duration] = summary[:head][:first][:timelog].time-summary[:head][:first][:timelog].time.beginning_of_day
 
     Category.where(parent_id: nil).each do |category|
       category.self_and_all_children.each do |childcategory|
@@ -93,6 +96,17 @@ class Category < ActiveRecord::Base
         summary[:category][ancestor.root.id][ancestor.id][:duration] += summary[:head][:prev][:duration]
       end
       summary[:head][:total][:inseconds] += summary[:head][:prev][:duration]
+    end        
+
+    if summary[:head][:last][:timelog]
+      summary[:head][:last][:endtime] = (summary[:head][:last][:timelog].time + summary[:head][:last][:timelog].duration.seconds) 
+      if summary[:head][:last][:endtime] > options[:end]
+        summary[:head][:last][:duration]  = summary[:head][:last][:endtime] - options[:end]
+        Category.find_by_id(summary[:head][:last][:timelog].category_id).self_and_ancestors.each do |ancestor|
+          summary[:category][ancestor.root.id][ancestor.id][:duration] -= summary[:head][:last][:duration]
+        end
+        summary[:head][:total][:inseconds] -= summary[:head][:last][:duration]
+      end
     end        
       
     summary[:head][:total][:days] = summary[:head][:total][:inseconds] / 86400
