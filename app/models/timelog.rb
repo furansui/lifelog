@@ -102,6 +102,7 @@ class Timelog < ActiveRecord::Base
           thisrow[:color] = Category.find_by_id(thisrow[:timelog].category_id).root.color
           thisrow[:timelog].duration = summary[:head][:prev][:remaining]
           thisrow[:timelog].time = @sortedTimelog.last.time.midnight
+          thisrow[:dayaccum] = 24*3600;
           summary[:row] << thisrow
         end
       end

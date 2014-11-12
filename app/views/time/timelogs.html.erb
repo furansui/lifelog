@@ -3,28 +3,57 @@
 
 <script>
  var data = <%= @summary.to_json.html_safe %>
- var width = 480, barHeight = 20;
+ var width = $('body').width()*0.95, barHeight = 20;
+ var barWidth = width*0.95
  var x = d3.scale.linear()
 		 .domain([0, 24*60])
 		 .range([0, 420]);
  var chart = d3.select("body").append("svg")
 	       .attr("width", width)
-	       .attr("height", barHeight * <%= @summary[:head][:total][:days] %> ) 
+	       .attr("height", barHeight * <%= @summary[:head][:total][:days] %>)//data.row.length) // 
  var bar = chart.selectAll("g")
 		.data(data.row)
 			  .enter().append("g")
-			  .attr("transform", function(d, i) { return "translate(" + (width-((d.dayaccum)/3600*width/24)) + "," + (d.day-1) * barHeight + ")"; });  //(d.day-1)
+//			  .attr("transform", function(d, i) { return "translate(" + (width-((d.dayaccum)/3600*width/24)) + "," + (d.day-1) * barHeight + ")"; });  //(d.day-1)
+
+ var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .text("a simple tooltip");
 
  bar.append("rect")
     .attr('class', 'bar')
+    .attr("x", function(d) {return (barWidth-(d.dayaccum/3600*barWidth/24)+5) })
+    .attr("y", function(d,i) {return ((d.day-1) * barHeight) })//barHeight*i}) 
     .style("fill", function(d) {return d.color})
-    .attr("width", function(d) {return d.timelog.duration/3600*width/24;})
-    .attr("height", barHeight - 1);
- bar.append("text")
+    .attr("width", function(d) {return d.timelog.duration/3600*barWidth/24;})
+    .attr("height", barHeight - 1)
+    .style("stroke", "black")
+    .style("opacity", 1.0)
+    .style("stroke-width", 1)
+    .on('mouseover', function(d){
+	var nodeSelection = d3.select(this).style({opacity:'0.5'});
+	d3.select("text").style({opacity:'0.0'});
+	var timelogTimeFormat = (d.timelog.time)
+	return tooltip.text((d.dayaccum/3600) + " " +timelogTimeFormat + " (" +  (Math.round(d.timelog.duration/3600*10)/10) + ") " +d.timelog.event)
+	    .style("top", parseInt(d3.select(this).attr("y"))+barHeight/2 + "px")
+	    .style("left", parseInt(d3.select(this).attr("x"))+10 + "px")
+	    .style("visibility", "visible")	
+    })
+    .on('mouseout', function(d){
+	d3.select(this).style({opacity:'1.0',})
+	d3.select("text").style({opacity:'0.0'});
+	return tooltip.style("visibility", "hidden");
+    })
+
+bar.append("text")
     .attr("x", function(d) { return 3; })
     .attr("y", barHeight / 2)
     .attr("dy", ".35em")
-    .text(function(d) { return d.timelog.event + " " + (Math.round(d.timelog.duration/3600*10)/10) ; });
+    .style("opacity", 0.0)
+    .text(function(d) { return "a"}) //d.timelog.event + " " + (Math.round(d.timelog.duration/3600*10)/10) ; });
 </script>
 
 <p>
