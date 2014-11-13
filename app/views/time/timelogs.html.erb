@@ -25,35 +25,29 @@
 
  bar.append("rect")
     .attr('class', 'bar')
-    .attr("x", function(d) {return (barWidth-(d.dayaccum/3600*barWidth/24)+5) })
+    .attr("x", function(d) {return d.dayaccum/3600*barWidth/24}) //function(d) {return ((d.dayaccum/3600)*(barWidth/24)) }//(d.dayaccum/3600*barWidth/24)+5 })
     .attr("y", function(d,i) {return ((d.day-1) * barHeight) })//barHeight*i}) 
     .style("fill", function(d) {return d.color})
-    .attr("width", function(d) {return d.timelog.duration/3600*barWidth/24;})
+    .attr("width", function(d) {return d.duration/3600*barWidth/24;})
     .attr("height", barHeight - 1)
     .style("stroke", "black")
     .style("opacity", 1.0)
     .style("stroke-width", 1)
     .on('mouseover', function(d){
 	var nodeSelection = d3.select(this).style({opacity:'0.5'});
-	d3.select("text").style({opacity:'0.0'});
-	var timelogTimeFormat = (d.timelog.time)
-	return tooltip.text((d.dayaccum/3600) + " " +timelogTimeFormat + " (" +  (Math.round(d.timelog.duration/3600*10)/10) + ") " +d.timelog.event)
+	var timelogTimeFormat = (d.time)
+	return tooltip.text(timelogTimeFormat + " (" +  (Math.round(d.duration/3600*10)/10) + ") " +d.event)
 	    .style("top", parseInt(d3.select(this).attr("y"))+barHeight/2 + "px")
 	    .style("left", parseInt(d3.select(this).attr("x"))+10 + "px")
 	    .style("visibility", "visible")	
     })
     .on('mouseout', function(d){
 	d3.select(this).style({opacity:'1.0',})
-	d3.select("text").style({opacity:'0.0'});
-	return tooltip.style("visibility", "hidden");
+	return tooltip.style("visibility", "hidden")
+	    .style("top", 0 + "px")
+	    .style("left", 0 + "px")
     })
 
-bar.append("text")
-    .attr("x", function(d) { return 3; })
-    .attr("y", barHeight / 2)
-    .attr("dy", ".35em")
-    .style("opacity", 0.0)
-    .text(function(d) { return "a"}) //d.timelog.event + " " + (Math.round(d.timelog.duration/3600*10)/10) ; });
 </script>
 
 <p>
@@ -77,10 +71,12 @@ bar.append("text")
 <%= link_to "Last week", time_timelogs_path(begin: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
 </p>
 
+remaining <%= @summary[:head][:prev][:remaining] %> <br />
 
-<% @summary[:row].sort_by{|v| v[:timelog].time}.reverse.each { |v| %>
-  <%= v[:timelog].time %>
-  <%= v[:timelog].duration/60 %>
-  <%= v[:timelog].event %>
+<% @summary[:row].sort_by{|v| v[:time]}.reverse.each { |v| %>
+  <%= v[:time] %>
+  <%= v[:duration]/60 %>
+  <%= v[:endofday] %>
+  <%= v[:event] %>
   <br />
 <% } %>
