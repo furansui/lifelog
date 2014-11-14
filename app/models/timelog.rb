@@ -128,7 +128,8 @@ class Timelog < ActiveRecord::Base
           thisrow[:duration] = summary[:head][:prev][:remaining]
           thisrow[:time] = @sortedTimelog.last.time.midnight
           thisrow[:dayaccum] = 0
-          #thisrow[:event] = timelog.event
+          thisrow[:event] = @prevDayTimelog.first.event
+          thisrow[:day] = 1
           summary[:row] << thisrow
         end
       end
