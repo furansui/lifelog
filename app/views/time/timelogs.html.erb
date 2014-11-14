@@ -5,26 +5,38 @@
  var data = <%= @summary.to_json.html_safe %>
  var width = $('body').width()*0.95, barHeight = 25;
  var txtWidth = 90;
- var barWidth = width-txtWidth;
- var x = d3.scale.linear()
-		 .domain([0, 24*60])
-		 .range([0, 420]);
+var axisHeight = 30;
+var rightSpace = 10;
+ var barWidth = width-txtWidth-rightSpace;
+var hourscale = d3.scale.linear()
+.domain([0,24])
+.range([0,barWidth])
+
+
  var chart = d3.select("body").append("svg")
 	       .attr("width", width)
-	       .attr("height", barHeight * <%= @summary[:head][:total][:days] %>)//data.row.length) // 
- var bar = chart.selectAll("g")
+	       .attr("height", axisHeight + barHeight * <%= @summary[:head][:total][:days] %>)//data.row.length) // 
+
+chart    .append("g")
+    .call(d3.svg.axis()
+          .scale(hourscale))
+	  .attr("transform", 
+              "translate(" + txtWidth + "," + barHeight * <%= @summary[:head][:total][:days] %> + ")");
+
+ var bar = chart.append("svg:g")
+		.selectAll("g")
 		.data(data.row)
 			  .enter().append("g")
 
- var axistext = chart.selectAll("text")
+ var daytext = chart.append("svg:g")
+		     .selectAll("text")
 		     .data(data.dates)
 			       .enter().append("text")
 
- axistext  .attr("dy", ".35em")
+ daytext  .attr("dy", ".35em")
 	   .attr("x", 0)
 	   .attr("y", function(d,i) {return i*barHeight+barHeight/2})
 	   .text(function(d) {return d})
-
 
  var tooltip = d3.select("body")
     .append("div")
