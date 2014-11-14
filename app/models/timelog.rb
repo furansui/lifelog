@@ -63,25 +63,30 @@ class Timelog < ActiveRecord::Base
     summary[:head][:range][:end] = options[:end]
     summary[:head][:total][:inseconds] = 0 #number of total duration
     summary[:head][:total][:days] = 0 #indicates number of days to show on graph
+    summary[:dates] = Array.new
 
     @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time")
     if !@sortedTimelog.empty?            
       currentDay = @sortedTimelog.first.time.beginning_of_day;
       currentDayi = 1;
+      summary[:dates] << currentDay.strftime("%Y.%m.%d %a")
 
       summary[:row] = Array.new
       @sortedTimelog.each_with_index do |timelog,index|
         if timelog.time.beginning_of_day != currentDay
           currentDayi += 1
           currentDay = timelog.time.beginning_of_day
+          summary[:dates] << currentDay.strftime("%Y.%m.%d %a")
         end
 
         thisrow = Hash.new
         thisrow[:index] = index
-        thisrow[:color] = Category.find_by_id(timelog.category_id).root.color
+        thisrow[:catid] = timelog.category_id
+        thisrow[:color] = Category.find_by_id(thisrow[:catid]).root.color
         thisrow[:duration] = timelog.duration
         thisrow[:time] = timelog.time
         thisrow[:event] = timelog.event
+
         #if over the midnight, create new row
         if (timelog.time + timelog.duration) > timelog.time.end_of_day
           thisrow[:duration] = timelog.time.end_of_day - timelog.time          
@@ -99,6 +104,7 @@ class Timelog < ActiveRecord::Base
           extrarow[:dayaccum] = 0
           currentDayi += 1
           currentDay = (timelog.time + 1.day).beginning_of_day
+          summary[:dates] << currentDay.strftime("%Y.%m.%d %a")
           extrarow[:day] = currentDayi #indicates the day this record belong to on the graph        
           summary[:row] << extrarow
 
@@ -117,11 +123,12 @@ class Timelog < ActiveRecord::Base
         @prevDayTimelog = Timelog.where('time < ?', options[:begin]).order("time desc")
         if !@prevDayTimelog.empty? 
           thisrow = Hash.new
-          thisrow[:color] = Category.find_by_id(timelog.category_id).root.color
+          thisrow[:catid] = @prevDayTimelog.first.category_id
+          thisrow[:color] = Category.find_by_id(thisrow[:catid]).root.color
           thisrow[:duration] = summary[:head][:prev][:remaining]
           thisrow[:time] = @sortedTimelog.last.time.midnight
           thisrow[:dayaccum] = 0
-          thisrow[:event] = timelog.event
+          #thisrow[:event] = timelog.event
           summary[:row] << thisrow
         end
       end
