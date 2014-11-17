@@ -83,7 +83,9 @@ class Category < ActiveRecord::Base
     summary[:head][:prev][:timelog] = Timelog.where("time < ?",options[:begin]).order("time desc").first
     summary[:head][:last][:timelog] = Timelog.where("time < ?",options[:end]).order("time desc").first
     summary[:head][:first][:timelog] = Timelog.where("time >= ?",options[:begin]).order("time").first
-    summary[:head][:prev][:duration] = summary[:head][:first][:timelog].time-summary[:head][:first][:timelog].time.beginning_of_day
+    if !summary[:head][:first][:timelog].nil?
+      summary[:head][:prev][:duration] = summary[:head][:first][:timelog].time-summary[:head][:first][:timelog].time.beginning_of_day
+    end
 
     Category.where(parent_id: nil).each do |category|
       category.self_and_all_children.each do |childcategory|
@@ -92,8 +94,9 @@ class Category < ActiveRecord::Base
       summary[:head][:total][:inseconds] += summary[:category][category.id][category.id][:duration]
     end
 
-    if summary[:head][:prev][:timelog]
+    if summary[:head][:prev][:duration] && !summary[:head][:prev][:timelog].nil?
       Category.find_by_id(summary[:head][:prev][:timelog].category_id).self_and_ancestors.each do |ancestor|
+        summary[:category][ancestor.root.id][ancestor.id][:duration] ||= 0
         summary[:category][ancestor.root.id][ancestor.id][:duration] += summary[:head][:prev][:duration]
       end
       summary[:head][:total][:inseconds] += summary[:head][:prev][:duration]

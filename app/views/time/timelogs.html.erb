@@ -93,12 +93,16 @@ chart    .append("g")
 <%= link_to "Last week", time_timelogs_path(begin: ((Time.now)-1.week).strftime('%Y-%m-%d 00:00'),end: (Time.now).strftime('%Y-%m-%d 23:59')), method: :post %>
 </p>
 
+<p>
 remaining <%= @summary[:head][:prev][:remaining] %> <br />
+days <%= @summary[:head][:total][:days] %>
+</p>
 
-<% @summary[:row].sort_by{|v| v[:time]}.reverse.each { |v| %>
+<%# @summary[:row].sort_by{|v| v[:time]}.reverse.each { |v| %>
+<% @summary[:row].each { |v| %>
   <%= v[:time] %>
   <%= v[:duration]/60 %>
   <%= v[:endofday] %>
-  <%= v[:event] %>
+  <%= link_to v[:event], timelog_path(v[:id]) %>
   <br />
 <% } %>

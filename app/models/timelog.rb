@@ -2,11 +2,12 @@ class Timelog < ActiveRecord::Base
   belongs_to :category
   validates :event, presence: true, length: {minimum: 3}
   validates :category_id, presence: true
+  validates :time, :uniqueness => {:scope => :event, :message => 'same time should have unique event name'}
 
   #to assign default category
   after_initialize :init
   def init
-    self.category_id ||= 1
+    category_id ||= 1
   end
 
   def self.duration()
@@ -52,7 +53,12 @@ class Timelog < ActiveRecord::Base
       end
 
       timelog = Timelog.new(time: row_hash["time"], event: row_hash["event"], category_id: id)
-      timelog.save!
+      begin
+        timelog.save!
+      rescue Exception
+        next
+      end
+
     end                
     self.duration()
   end
@@ -65,7 +71,7 @@ class Timelog < ActiveRecord::Base
     summary[:head][:total][:days] = 0 #indicates number of days to show on graph
     summary[:dates] = Array.new
 
-    @sortedTimelog = Timelog.where(time: options[:begin]..options[:end]).order("time")
+    @sortedTimelog = Timelog.where("time >= ? AND time <= ? AND duration > 0", options[:begin],options[:end]).order("time")
     if !@sortedTimelog.empty?            
       currentDay = @sortedTimelog.first.time.beginning_of_day;
       currentDayi = 1;
@@ -84,6 +90,7 @@ class Timelog < ActiveRecord::Base
         thisrow[:catid] = timelog.category_id
         thisrow[:color] = Category.find_by_id(thisrow[:catid]).root.color
         thisrow[:duration] = timelog.duration
+        thisrow[:id] = timelog.id
         thisrow[:time] = timelog.time
         thisrow[:event] = timelog.event
 
@@ -100,6 +107,7 @@ class Timelog < ActiveRecord::Base
           extrarow[:duration] = timelog.duration - thisrow[:duration]
           extrarow[:time] = (timelog.time + 1.day).beginning_of_day
           extrarow[:event] = timelog.event
+          extrarow[:id] = timelog.id
 
           extrarow[:dayaccum] = 0
           currentDayi += 1
@@ -129,6 +137,7 @@ class Timelog < ActiveRecord::Base
           thisrow[:time] = @sortedTimelog.last.time.midnight
           thisrow[:dayaccum] = 0
           thisrow[:event] = @prevDayTimelog.first.event
+          thisrow[:id] = @prevDayTimelog.first.id
           thisrow[:day] = 1
           summary[:row] << thisrow
         end

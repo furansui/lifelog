@@ -4,10 +4,6 @@
 <%= link_to 'New timelog', new_timelog_path %> <%= link_to 'Home', root_path %>
 </p>
 
-<% @timelogs.order("time desc").each do |timelog| %>
-  <%= render timelog %>
-<% end %>
-
 <h2>Import CSV</h2>
 <%= form_tag import_timelogs_path, multipart: true do %>
   <%= file_field_tag :file %>
@@ -25,3 +21,7 @@
   <%= submit_tag "Delete" %>
 <% end %>
 
+<h2>Timelogs</h2>
+<% @timelogs.order("time desc").each do |timelog| %>
+  <%= render timelog %>
+<% end %>

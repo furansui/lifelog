@@ -9,6 +9,7 @@ class TimelogsController < ApplicationController
     @category = Category.find(params[:timelog][:category_id])
     @timelog = @category.timelogs.create(timelog_params)
     if @timelog.save
+      Timelog.duration()
       redirect_to @timelog
     else
       render 'new'
