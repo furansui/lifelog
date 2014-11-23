@@ -25,8 +25,6 @@ class Timelog < ActiveRecord::Base
 
   #find category and create
   def self.parse(row_hash)
-    row_hash[:time]
-
     regex = /(\S+)/
     if row_hash[:event]
       matches = row_hash[:event].match regex
@@ -62,7 +60,7 @@ class Timelog < ActiveRecord::Base
     CSV.foreach(file.path, headers: true) do |row|      
       row_hash = row.to_hash
       begin
-        Timelog.parse(row_hash)
+        Timelog.parse({event: row_hash["event"], time: row_hash["time"]})
       rescue Exception
         next
       end
