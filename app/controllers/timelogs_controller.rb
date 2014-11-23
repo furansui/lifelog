@@ -42,7 +42,7 @@ class TimelogsController < ApplicationController
 
   private
   def timelog_params
-    params.require(:timelog).permit(:time, :event)
+    params.require(:timelog).permit(:time, :event, :category_id)
   end
 
 end
