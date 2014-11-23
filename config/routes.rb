@@ -32,6 +32,12 @@ Lifelog::Application.routes.draw do
     }
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :timelogs
+    end
+  end
+
   # Example resource route with options:
   #   resources :products do
   #     member do

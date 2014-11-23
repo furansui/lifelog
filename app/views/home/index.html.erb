@@ -2,3 +2,11 @@
 <%= link_to 'Dashboard', time_categories_path %>
 <%= link_to 'Timelog', controller: 'timelogs' %>
 <%= link_to 'Category', controller: 'categories' %>
+
+<br />
+<% @eventtext = "2014-2-10 20:00 rails notes" %>
+<% if m=/^\b(today|yesterday|[0-9]{4}(\.|-)[0-9]+(\.|-)[0-9]+)\b \b[0-9:]\b/.match(@eventtext) %>
+<%= m[0] %><br />
+<%= DateTime.parse(m[0]) %><br />
+beggining with date<br />
+<% end %>

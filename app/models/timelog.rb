@@ -3,12 +3,13 @@ class Timelog < ActiveRecord::Base
   validates :event, presence: true, length: {minimum: 3}
   validates :category_id, presence: true
   validates :time, :uniqueness => {:scope => :event, :message => 'same time should have unique event name'}
+  before_save {|timelog| timelog.time = timelog.time.change(sec: 0) }
 
-  #to assign default category
-  after_initialize :init
-  def init
-    category_id ||= 1
-  end
+  # #to assign default category
+  # after_initialize :init
+  # def init
+  #   category_id ||= 1
+  # end
 
   def self.duration()
     @timelogs = Timelog.all.order("time desc")
@@ -22,43 +23,49 @@ class Timelog < ActiveRecord::Base
     end
   end
 
+  #find category and create
+  def self.parse(row_hash)
+    row_hash[:time]
+
+    regex = /(\S+)/
+    if row_hash[:event]
+      matches = row_hash[:event].match regex
+      else
+      raise "error on #{row_hash}"
+    end
+    
+      #check the first word
+    if matches        
+      if matches[1].length <= 3
+        #if length is 3, get id by shortcut
+          cat = Category.find_by_shortcut(matches[1].downcase)
+      else
+        #else get id by event itself
+        cat = Category.find_by_name(matches[1].downcase)
+      end
+    end
+    
+    #if category is not found, use id 1
+    if cat
+      id = cat.id
+    else
+      id = Category.find_by_name("unknown").id
+    end
+    
+    timelog = Timelog.new(time: row_hash[:time], event: row_hash[:event], category_id: id)
+    timelog.save
+    timelog
+  end
+
   #import csv
   def self.import(file)    
     CSV.foreach(file.path, headers: true) do |row|      
       row_hash = row.to_hash
-
-      regex = /(\S+)/
-      if row_hash["event"]
-        matches = row_hash["event"].match regex
-      else
-        raise "error on #{row_hash}"
-      end
-      
-      #check the first word
-      if matches        
-        if matches[1].length <= 3
-          #if length is 3, get id by shortcut
-          cat = Category.find_by_shortcut(matches[1].downcase)
-        else
-          #else get id by event itself
-          cat = Category.find_by_name(matches[1].downcase)
-        end
-      end
-
-      #if category is not found, use id 1
-      if cat
-        id = cat.id
-      else
-        id = Category.find_by_name("unknown").id
-      end
-
-      timelog = Timelog.new(time: row_hash["time"], event: row_hash["event"], category_id: id)
       begin
-        timelog.save!
+        Timelog.parse(row_hash)
       rescue Exception
         next
       end
-
     end                
     self.duration()
   end
