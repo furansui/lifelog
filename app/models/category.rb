@@ -13,6 +13,15 @@ class Category < ActiveRecord::Base
       self.shortcut = self.shortcut.downcase
     end
   end
+
+  def self.to_csv(options = {}) 
+    CSV.generate(options) do |csv|
+      csv << column_names
+      all.each do |category|
+        csv << category.attributes.values_at(*column_names)
+      end
+    end
+  end
   
   #import csv
   def self.import(file)    
@@ -31,7 +40,7 @@ class Category < ActiveRecord::Base
           raise "parent #{row_hash["parent"]} name #{row_hash["name"]}"
         end
       end
-      category = Category.new(name: row_hash["name"], shortcut: row_hash["shortcut"], notes: row_hash["notes"], parent_id: id)
+      category = Category.new(name: row_hash["name"], shortcut: row_hash["shortcut"], notes: row_hash["notes"], color: row_hash["color"], parent_id: id)
       if category.save
       else
         raise "error on #{category.name} #{category.shortcut}"

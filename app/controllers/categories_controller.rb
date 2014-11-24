@@ -1,6 +1,10 @@
 class CategoriesController < ApplicationController
   def index
     @categories = Category.all    
+    respond_to do |format|
+      format.html
+      format.csv { send_data @categories.to_csv}
+    end
   end
   def new
     @category = Category.new

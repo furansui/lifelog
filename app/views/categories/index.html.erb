@@ -3,6 +3,7 @@
 <p>
 <%= link_to 'New category', new_category_path %>
 <%= link_to 'Home', root_path %>
+<%= link_to "csv", categories_path(format: "csv") %>
 </p>
 
 <% @categories.each do |category| %>
