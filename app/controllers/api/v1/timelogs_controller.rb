@@ -7,8 +7,19 @@ class Api::V1::TimelogsController < ApplicationController
       status = 302
       message = {:message => 'Please specify event'}
     else
-      begin
-        timelog = Timelog.parse(time: DateTime.now, event: params[:event])
+      begin        
+        if m=/^(today|yesterday|[0-9]{2,4}(\.|-)[0-9]+(\.|-)[0-9]+)*\s*([0-9]{1,2}:[0-9]{2}(am)*)(.*)/.match(params[:event])
+          if m[1].blank?
+            params[:time] = Time.zone.parse(m[4])
+          else
+            params[:time] = Time.zone.parse(m[1]+" "+m[4])
+          end
+          params[:event] = m[6]
+        else
+          params[:time] = Time.zone.now
+        end
+
+        timelog = Timelog.parse(time: params[:time], event: params[:event])
         Timelog.duration()
         message = {:message => timelog}
       rescue Exception

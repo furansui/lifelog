@@ -32,7 +32,7 @@ class Timelog < ActiveRecord::Base
       raise "error on #{row_hash}"
     end
     
-      #check the first word
+    #check the first word
     if matches        
       if matches[1].length <= 3
         #if length is 3, get id by shortcut

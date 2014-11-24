@@ -33,6 +33,7 @@ class TimelogsController < ApplicationController
   def destroy
     @timelog = Timelog.find(params[:id])
     @timelog.destroy
+    Timelog.duration()
     redirect_to timelogs_path
   end
   def import
