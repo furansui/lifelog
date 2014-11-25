@@ -1,6 +1,10 @@
 class TimelogsController < ApplicationController
   def index
     @timelogs = Timelog.all
+    respond_to do |format|
+      format.html
+      format.csv { send_data @timelogs.to_csv}
+    end
   end
   def new
     @timelog = Timelog.new

@@ -2,6 +2,7 @@
 
 <p>
 <%= link_to 'New timelog', new_timelog_path %> <%= link_to 'Home', root_path %>
+<%= link_to "csv", timelogs_path(format: "csv") %>
 </p>
 
 <h2>Import CSV</h2>

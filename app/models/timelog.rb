@@ -11,6 +11,15 @@ class Timelog < ActiveRecord::Base
   #   category_id ||= 1
   # end
 
+  def self.to_csv(options = {}) 
+    CSV.generate(options) do |csv|
+      csv << column_names
+      all.each do |category|
+        csv << category.attributes.values_at(*column_names)
+      end
+    end
+  end
+
   def self.duration()
     @timelogs = Timelog.all.order("time desc")
     @timelogs.each_with_index do |timelog,index|
