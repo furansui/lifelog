@@ -1,6 +1,6 @@
 class Category < ActiveRecord::Base
   has_many :timelogs
-  validates :name, uniqueness: true, format: {without: /\s/}
+  validates :name, uniqueness: true, format: {without: /\s/}, presence: true
   validates :shortcut, format: {without: /\s/}
   validates_uniqueness_of :shortcut, allow_blank: true
   belongs_to :parent, class_name: 'Category'
@@ -48,7 +48,24 @@ class Category < ActiveRecord::Base
     end                
   end
    
-
+  def self.parentNameToNote 
+    all.each do |category|
+      unless category.parent_id.nil?        
+        category.notes = Category.find_by_id(category.parent_id).name
+        category.save
+      end
+    end
+  end
+    
+  def self.fix0parentId
+    all.each do |category|
+      if category.parent_id == 0
+        category.parent_id = nil
+        category.save
+      end    
+    end
+  end
+      
   def self.secondsToString(t)
     mm, ss = t.divmod(60)   
     hh, mm = mm.divmod(60)  
