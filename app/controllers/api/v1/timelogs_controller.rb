@@ -1,6 +1,8 @@
 class Api::V1::TimelogsController < ApplicationController
   respond_to :json, :xml
   protect_from_forgery with: :null_session
+  skip_before_filter :authenticate #, :only => :show
+
   def create
     message = params[:event]
     if params[:event].blank? 

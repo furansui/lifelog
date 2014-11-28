@@ -17,3 +17,5 @@
 
 *~
 ##
+
+config/initializers/dev_environment.rb

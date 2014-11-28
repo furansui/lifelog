@@ -1,4 +1,5 @@
 class TimelogsController < ApplicationController
+
   def index
     @timelogs = Timelog.all
     respond_to do |format|

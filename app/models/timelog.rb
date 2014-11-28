@@ -43,11 +43,8 @@ class Timelog < ActiveRecord::Base
     
     #check the first word
     if matches        
-      if matches[1].length <= 3
-        #if length is 3, get id by shortcut
-          cat = Category.find_by_shortcut(matches[1].downcase)
-      else
-        #else get id by event itself
+      cat = Category.find_by_shortcut(matches[1].downcase)
+      if cat.nil?
         cat = Category.find_by_name(matches[1].downcase)
       end
     end
