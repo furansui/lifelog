@@ -5,6 +5,13 @@
 <%= link_to "csv", timelogs_path(format: "csv") %>
 </p>
 
+<h2>Import Moves</h2>
+<ul>
+<% Dir["/home/pi/data/moves/*.txt"].sort.reverse.first(7).each do |file| %>
+  <li><%= link_to File.basename(file), import_timelogs_path(:file => file), method: :post %></li>
+<% end %>
+</ul>
+
 <h2>Import CSV</h2>
 <%= form_tag import_timelogs_path, multipart: true do %>
   <%= file_field_tag :file %>
@@ -23,6 +30,9 @@
 <% end %>
 
 <h2>Timelogs</h2>
+<%= form_tag delete_multiple_timelogs_path do %>
 <% @timelogs.order("time desc").each do |timelog| %>
-  <%= render timelog %>
+  <%= check_box_tag "timelog_ids[]", timelog.id %><%= render timelog %>
+<% end %>
+<%= submit_tag "Delete checked" %>
 <% end %>

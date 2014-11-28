@@ -29,6 +29,7 @@ Lifelog::Application.routes.draw do
     collection { 
       post :import 
       post :delete
+      post :delete_multiple
     }
   end
 

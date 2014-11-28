@@ -63,7 +63,7 @@ class Timelog < ActiveRecord::Base
 
   #import csv
   def self.import(file)    
-    CSV.foreach(file.path, headers: true) do |row|      
+    CSV.foreach((file.class==String)?file:file.path, headers: true) do |row|      
       row_hash = row.to_hash
       begin
         Timelog.parse({event: row_hash["event"], time: row_hash["time"]})
