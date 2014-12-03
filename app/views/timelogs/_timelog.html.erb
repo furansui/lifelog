@@ -1,4 +1,7 @@
-<%= timelog.time %> (<%= Time.at(timelog.duration).utc.strftime("%H:%M:%S") %>) 
+<%= timelog.time %> 
+<% unless timelog.duration.nil? %>
+(<%= Time.at(timelog.duration).utc.strftime("%H:%M:%S") %>) 
+<% end %>
 <% category = Category.find_by_id(timelog.category_id) %>
 <%= link_to category.name, category_path(category) %> 
 <%= timelog.event %>

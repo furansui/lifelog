@@ -12,10 +12,25 @@
 <% end %>
 </ul>
 
+<h2>Import Gcal</h2>
+<ul>
+<% Dir["/home/pi/data/gcal/*.csv"].sort.reverse.first(7).each do |file| %>
+  <li><%= link_to File.basename(file), import_timelogs_path(:file => file), method: :post %></li>
+<% end %>
+</ul>
+
 <h2>Import CSV</h2>
 <%= form_tag import_timelogs_path, multipart: true do %>
   <%= file_field_tag :file %>
   <%= submit_tag "Import" %>
+<% end %>
+
+<h2>Timelogs</h2>
+<%= form_tag delete_multiple_timelogs_path do %>
+<% @timelogs.order("time desc").each do |timelog| %>
+  <%= check_box_tag "timelog_ids[]", timelog.id %><%= render timelog %>
+<% end %>
+<%= submit_tag "Delete checked" %>
 <% end %>
 
 <h2>Batch Delete</h2>
@@ -27,12 +42,4 @@
   <%= datetime_select("time","end",default: {:hour => 23, :minute => 59} ) %>
   </br>
   <%= submit_tag "Delete" %>
-<% end %>
-
-<h2>Timelogs</h2>
-<%= form_tag delete_multiple_timelogs_path do %>
-<% @timelogs.order("time desc").each do |timelog| %>
-  <%= check_box_tag "timelog_ids[]", timelog.id %><%= render timelog %>
-<% end %>
-<%= submit_tag "Delete checked" %>
 <% end %>
