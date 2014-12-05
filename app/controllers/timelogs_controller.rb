@@ -1,9 +1,9 @@
 class TimelogsController < ApplicationController
 
   def index
-    @timelogs = Timelog.all
+    @timelogs = Timelog.all.order("time desc")
     unless request.format.csv?
-      @timelogs = Timelog.paginate(:page => params[:page], :per_page => 25)
+      @timelogs = @timelogs.paginate(:page => params[:page], :per_page => 25)
     end
     respond_to do |format|
       format.html
