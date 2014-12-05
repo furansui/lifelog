@@ -14,7 +14,7 @@
 
 <h2>Import Gcal</h2>
 <ul>
-<% Dir["/home/pi/data/gcal/*.csv"].sort.reverse.first(7).each do |file| %>
+<% Dir["/home/pi/data/gcal/*.csv"].sort.reverse.first(11).each do |file| %>
   <li><%= link_to File.basename(file), import_timelogs_path(:file => file), method: :post %></li>
 <% end %>
 </ul>
@@ -32,6 +32,7 @@
 <% end %>
 <%= submit_tag "Delete checked" %>
 <% end %>
+<%= will_paginate @timelogs %>
 
 <h2>Batch Delete</h2>
 <%= form_tag delete_timelogs_path, multipart: true do %>
