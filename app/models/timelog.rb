@@ -2,8 +2,8 @@ class Timelog < ActiveRecord::Base
   belongs_to :category
   validates :event, presence: true, length: {minimum: 3}
   validates :category_id, presence: true
-  validates :time, :uniqueness => {:scope => :event, :message => 'same time should have unique event name'}
-  before_validation {|timelog| timelog.time = timelog.time.change(sec: 0) }
+  validates :time, :uniqueness => {:scope => :category_id, :message => 'same time should have unique event name'}
+  before_validation {|timelog| timelog.time = timelog.time.in_time_zone.change(sec: 0) }
 
   # #to assign default category
   # after_initialize :init
