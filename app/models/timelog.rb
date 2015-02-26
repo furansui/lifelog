@@ -32,6 +32,30 @@ class Timelog < ActiveRecord::Base
     end
   end
 
+  #fast update duration
+  def update_duration
+    ne = self.next.first
+    pr = self.previous.first
+    if ne
+      self.duration = self.next.time-self.time
+    else
+      self.duration = Time.zone.now-self.time
+    end
+    if pr
+      pr.duration = self.time-pr.time
+      pr.save
+    end
+  end
+
+  def next
+    Timelog.where('(time > ?)', self.time ).order('time asc, id asc')
+  end
+
+  def previous
+    Timelog.where('(time < ?)', self.time ).order('time desc, id desc')
+  end
+
+
   #find category and create
   def self.parse(row_hash)
     regex = /(\S+)/
@@ -57,6 +81,7 @@ class Timelog < ActiveRecord::Base
     end
     
     timelog = Timelog.new(time: row_hash[:time], event: row_hash[:event], category_id: id)
+    timelog.update_duration
     timelog.save
     timelog
   end
@@ -71,7 +96,7 @@ class Timelog < ActiveRecord::Base
         next
       end
     end                
-    self.duration()
+    #self.duration()
   end
 
   def self.summarize(options)

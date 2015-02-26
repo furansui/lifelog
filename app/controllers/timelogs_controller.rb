@@ -16,8 +16,8 @@ class TimelogsController < ApplicationController
   def create
     @category = Category.find(params[:timelog][:category_id])
     @timelog = @category.timelogs.create(timelog_params)
-    if @timelog.save
-      Timelog.duration()
+    @timelog.update_duration
+    if @timelog.save      
       redirect_to @timelog
     else
       render 'new'
@@ -40,16 +40,28 @@ class TimelogsController < ApplicationController
   end
   def destroy
     @timelog = Timelog.find(params[:id])
+    pr = @timelog.prev
+    pr.update_duration
+    pr.save
+    ne = @timelog.next
+    ne.update_duration
+    ne.save
     @timelog.destroy
-    Timelog.duration()
+    #Timelog.duration()
     redirect_to timelogs_path
   end
   def delete_multiple
     @timelogs = Timelog.find(params[:timelog_ids])
     @timelogs.each do | timelog|
+      pr = timelog.prev
+      pr.update_duration
+      pr.save
+      ne = timelog.next
+      ne.update_duration
+      ne.save
       timelog.destroy
     end
-    Timelog.duration()
+    #Timelog.duration()
     redirect_to timelogs_path
   end
   def import
