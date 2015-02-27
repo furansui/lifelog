@@ -56,6 +56,7 @@ class TimelogsController < ApplicationController
         ne2.save
       end
       
+      system('/home/pi/./upsql.sh&')
 
       redirect_to @timelog
     else
