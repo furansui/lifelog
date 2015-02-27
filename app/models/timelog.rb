@@ -37,7 +37,7 @@ class Timelog < ActiveRecord::Base
     ne = self.next.first
     pr = self.previous.first
     if ne
-      self.duration = self.next.time-self.time
+      self.duration = ne.time-self.time
     else
       self.duration = Time.zone.now-self.time
     end
@@ -83,6 +83,7 @@ class Timelog < ActiveRecord::Base
     timelog = Timelog.new(time: row_hash[:time], event: row_hash[:event], category_id: id)
     timelog.update_duration
     timelog.save
+    system('/home/pi/./upsql.sh&')
     timelog
   end
 
@@ -91,11 +92,12 @@ class Timelog < ActiveRecord::Base
     CSV.foreach((file.class==String)?file:file.path, headers: true) do |row|      
       row_hash = row.to_hash
       begin
-        Timelog.parse({event: row_hash["event"], time: row_hash["time"]})
+        timelog = Timelog.parse(event: row_hash["event"], time: row_hash["time"])
+        timelog.save
       rescue Exception
         next
       end
-    end                
+    end      
     #self.duration()
   end
 

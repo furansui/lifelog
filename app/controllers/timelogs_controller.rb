@@ -18,6 +18,7 @@ class TimelogsController < ApplicationController
     @timelog = @category.timelogs.create(timelog_params)
     @timelog.update_duration
     if @timelog.save      
+      system('/home/pi/./upsql.sh&')
       redirect_to @timelog
     else
       render 'new'
@@ -32,7 +33,30 @@ class TimelogsController < ApplicationController
   end
   def update
     @timelog = Timelog.find(params[:id])
+    pr1 = @timelog.previous.first
+    ne1 = @timelog.next.first
     if @timelog.update(timelog_params)
+      pr2 = @timelog.previous.first
+      ne2 = @timelog.next.first
+
+      if pr1
+        pr1.update_duration
+        pr1.save
+      end
+      if ne1
+        ne1.update_duration
+        ne1.save
+      end
+      if pr2
+        pr2.update_duration
+        pr2.save
+      end
+      if ne2
+        ne2.update_duration
+        ne2.save
+      end
+      
+
       redirect_to @timelog
     else
       render 'edit'
@@ -41,11 +65,15 @@ class TimelogsController < ApplicationController
   def destroy
     @timelog = Timelog.find(params[:id])
     pr = @timelog.prev
-    pr.update_duration
-    pr.save
+    if pr
+      pr.update_duration
+      pr.save
+    end
     ne = @timelog.next
-    ne.update_duration
-    ne.save
+    if ne
+      ne.update_duration
+      ne.save
+    end
     @timelog.destroy
     #Timelog.duration()
     redirect_to timelogs_path
@@ -53,12 +81,16 @@ class TimelogsController < ApplicationController
   def delete_multiple
     @timelogs = Timelog.find(params[:timelog_ids])
     @timelogs.each do | timelog|
-      pr = timelog.prev
-      pr.update_duration
-      pr.save
-      ne = timelog.next
-      ne.update_duration
-      ne.save
+      pr = timelog.previous.first
+      if pr
+        pr.update_duration
+        pr.save
+      end
+      ne = timelog.next.first
+      if ne
+        ne.update_duration
+        ne.save
+      end
       timelog.destroy
     end
     #Timelog.duration()

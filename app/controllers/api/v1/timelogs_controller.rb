@@ -22,9 +22,6 @@ class Api::V1::TimelogsController < ApplicationController
         end
 
         timelog = Timelog.parse(time: params[:time], event: params[:event])
-        #Timelog.duration()
-        timelog.update_duration
-        timelog.save
         message = {:message => timelog}
       rescue Exception
         message = {:message => 'Error in saving'}
