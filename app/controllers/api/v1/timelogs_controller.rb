@@ -6,7 +6,8 @@ class Api::V1::TimelogsController < ApplicationController
   def create
     message = params[:event]
     if params[:event].blank? 
-      status = 302
+      timelog = Timelog.parse(time: Time.zone.now, event: "dummy")
+      #status = 302
       message = {:message => 'Please specify event'}
     else
       begin        
