@@ -102,6 +102,9 @@ class Timelog < ActiveRecord::Base
   end
 
   def self.summarize(options)
+    lastlog = Timelog.all.order("time desc").first
+    lastlog.duration = Time.zone.now-lastlog.time
+    lastlog.save
     summary = Hash.new { |h,k| h[k] = Hash.new { |h2,k2| h2[k2] = Hash.new { |h3,k3| h3[k3]=0 } } }
     summary[:head][:range][:begin] = options[:begin]
     summary[:head][:range][:end] = options[:end]

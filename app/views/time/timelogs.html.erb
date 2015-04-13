@@ -99,8 +99,8 @@ remaining <%= @summary[:head][:prev][:remaining] %> <br />
 days <%= @summary[:head][:total][:days] %>
 </p>
 
-<%# @summary[:row].sort_by{|v| v[:time]}.reverse.each { |v| %>
-<% @summary[:row].each { |v| %>
+<%# @summary[:row].sort_by{|v| v[:time]}.each { |v| %>
+<% @summary[:row].sort_by{|t| t[:time]}.reverse.each { |v| %>
   <%= v[:time] %>
   <%= v[:duration]/60 %>
   <%= v[:endofday] %>
