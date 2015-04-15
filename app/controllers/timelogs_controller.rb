@@ -66,16 +66,16 @@ class TimelogsController < ApplicationController
   def destroy
     @timelog = Timelog.find(params[:id])
     pr = @timelog.previous.first
+    ne = @timelog.next.first
+    @timelog.destroy
     if pr
       pr.update_duration
       pr.save
     end
-    ne = @timelog.next.first
     if ne
       ne.update_duration
       ne.save
     end
-    @timelog.destroy
     #Timelog.duration()
     redirect_to timelogs_path
   end
