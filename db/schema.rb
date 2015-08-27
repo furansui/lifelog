@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141111174336) do
+ActiveRecord::Schema.define(version: 20150827135848) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -25,6 +25,14 @@ ActiveRecord::Schema.define(version: 20141111174336) do
   end
 
   add_index "categories", ["parent_id"], name: "index_categories_on_parent_id"
+
+  create_table "clothes", force: true do |t|
+    t.string   "name"
+    t.string   "brand"
+    t.text     "wear"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "timelogs", force: true do |t|
     t.datetime "time"

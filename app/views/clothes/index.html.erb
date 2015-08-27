@@ -1,2 +1,8 @@
-<h1>Clothes#index</h1>
-<p>Find me in app/views/clothes/index.html.erb</p>
+<h1>Clothes</h1>
+<%= link_to 'New clothes', new_clothe_path %> <%= link_to 'Home', root_path %>
+<p>Number of clothes <%= Clothe.count %></p>
+
+<% @clothes.each do |clothe| %>
+  <%= render clothe %>
+<% end %>
+
