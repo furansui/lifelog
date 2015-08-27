@@ -1,1 +1,5 @@
-<%= clothe.id %> <%= clothe.name %> <%= clothe.brand %> <br />
+<%= clothe.id %> <%= clothe.name %>
+<% if(clothe.wear.size > 0) %>
+<%= clothe.wear.sort_by{|date| DateTime.parse(date)}.last %> (<%= clothe.wear.size %> x)
+<% end %>
+<br />
