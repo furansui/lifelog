@@ -4,7 +4,6 @@ class ClothesController < ApplicationController
   end
   
   def new
-    msg = nil
     @clothe = Clothe.new
   end
 
@@ -17,7 +16,6 @@ class ClothesController < ApplicationController
     if @clothe.save
       redirect_to action: "index"
     else
-      msg = @clothe.errors.full_messages
       render :new
     end
   end
