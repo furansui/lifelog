@@ -2,7 +2,8 @@
 <%= link_to 'New clothes', new_clothe_path %> <%= link_to 'Home', root_path %>
 <p>Number of clothes <%= Clothe.count %></p>
 
+<table>
 <% @clothes.each do |clothe| %>
   <%= render clothe %>
 <% end %>
-
+</table>
