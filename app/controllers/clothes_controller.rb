@@ -19,7 +19,19 @@ class ClothesController < ApplicationController
       render :new
     end
   end
+  def edit
+    @clothe = Clothe.find(params[:id])
+  end
 
+  def update
+    @clothe = Clothe.find(params[:id])
+    if @clothe.update(clothe_params)
+      redirect_to action: "index"
+    else
+      render 'edit'
+    end
+  end
+  
   private
   def clothe_params
     params.require(:clothe).permit(:name, :brand, :bought)

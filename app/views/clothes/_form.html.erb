@@ -1,12 +1,12 @@
-<h1>Clothes: new</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Back', clothes_path %>
-
-
 <% if @clothe.errors.any? %>
-<%= @clothe.errors.full_messages %>
+<div id="error_explanation">
+  <h2><%= pluralize(@clothe.errors.count, "error") %>:</h2>
+  <ul>
+    <% @clothe.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+    <% end %>
+  </ul>
+</div>
 <% end %>
 
 <%= form_for @clothe  do |f| %>
