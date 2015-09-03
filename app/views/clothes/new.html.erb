@@ -5,27 +5,3 @@
 <%= link_to 'Back', clothes_path %>
 
 
-<% if @clothe.errors.any? %>
-<%= @clothe.errors.full_messages %>
-<% end %>
-
-<%= form_for @clothe  do |f| %>
-<p>
-  <%= f.label :name %><br>
-  <%= f.text_field :name %>
-</p>
-
-<p>
-  <%= f.label :brand %><br>
-  <%= f.text_field :brand %>
-</p>
-
-<p>
-  <%= f.label :bought %>
-  <%= f.datetime_select :bought %>
-</p>
-
-<p>
-  <%= f.submit %>
-</p>
-<% end %>

@@ -9,4 +9,5 @@
     <% end %>    
   </td>
   <td><%= clothe.bought %></td>
+  <td><%= link_to "today",  wear_today_clothes_path(clothe), method: :post  %></td>
 </tr>
