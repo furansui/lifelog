@@ -3,11 +3,24 @@
 <% end %>
 
 <h1>Clothes</h1>
+
 <%= link_to 'New clothes', new_clothe_path %> <%= link_to 'Home', root_path %>
+
+<h2>Today</h2>
+<table>
+<% @clothes.each do |clothe| %>
+<%if clothe.wear.sort_by{|date| DateTime.parse(date)}.last == Date.today.strftime("%d %b %Y") %>
+<%= render clothe %>
+<% end %>
+<% end %>
+</table>
+
+<h2>List</h2>
 <p>Number of clothes <%= Clothe.count %></p>
 
 <table>
-<% @clothes.each do |clothe| %>
+  <% @clothes.each do |clothe| %>
   <%= render clothe %>
-<% end %>
+  <% end %>
 </table>
+
