@@ -19,6 +19,16 @@
 <p>Number of clothes <%= Clothe.count %></p>
 
 <table>
+  <tr>
+    <th><%= sortable "id" %></th>
+    <th><%= sortable "brand" %></th>
+    <th><%= sortable "name" %></th>
+    <th><%= sortable "wear.size", "times" %></th>
+    <th><%= sortable "wear", "last worn" %></th>
+    <th><%= sortable "bought" %></th>
+    <th>today</th>
+  </tr>
+
   <% @clothes.each do |clothe| %>
   <%= render clothe %>
   <% end %>

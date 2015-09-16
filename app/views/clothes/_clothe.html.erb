@@ -3,6 +3,7 @@
   <td><%= clothe.brand %></td>
   <td><%= link_to clothe.name, edit_clothe_path(clothe) %></td>
   <td><%= clothe.wear.size %></td>
+  
   <td>
     <% if(clothe.wear.size > 0) %>
     <%= clothe.wear.sort_by{|date| DateTime.parse(date)}.last %>

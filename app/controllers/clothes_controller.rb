@@ -1,6 +1,8 @@
 class ClothesController < ApplicationController
+  helper_method :sort_column, :sort_direction
+  
   def index
-    @clothes = Clothe.all.order("name")
+    @clothes = Clothe.order(sort_column + ' ' + sort_direction)
     @clothesPerDay = Clothe.getPerDay
   end
   
@@ -43,6 +45,15 @@ class ClothesController < ApplicationController
   
   private
   def clothe_params
-    params.require(:clothe).permit(:name, :brand, :bought, :worn)
+    params.require(:clothe).permit(:name, :brand, :bought, :worn) 
+  end
+
+  # default sorting value
+  def sort_column
+    params[:sort] || "name"
+  end
+  
+  def sort_direction
+    params[:direction] || "asc"
   end
 end
