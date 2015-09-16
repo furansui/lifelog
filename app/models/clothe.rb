@@ -12,4 +12,16 @@ class Clothe < ActiveRecord::Base
   def worn=(date)    
     wear << date
   end
+
+  def self.getPerDay
+    # get clothes id per day recorded
+    clothesPerDay= Hash.new { |h,k| h[k] = [] }
+    Clothe.all.each do |clothe|
+      clothe.wear.sort_by{|date| DateTime.parse(date)}.each do |date|
+        clothesPerDay[date] << clothe.id
+      end
+    end
+    clothesPerDay
+  end
+  
 end

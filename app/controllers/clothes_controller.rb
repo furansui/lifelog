@@ -1,6 +1,7 @@
 class ClothesController < ApplicationController
   def index
     @clothes = Clothe.all.order("name")
+    @clothesPerDay = Clothe.getPerDay
   end
   
   def new
