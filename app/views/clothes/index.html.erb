@@ -23,8 +23,8 @@
     <th><%= sortable "id" %></th>
     <th><%= sortable "brand" %></th>
     <th><%= sortable "name" %></th>
-    <th><%= sortable "wear.size", "times" %></th>
-    <th><%= sortable "wear", "last worn" %></th>
+    <th><%= sortable "times" %></th>
+    <th><%= sortable "lastWorn", "last worn" %></th>
     <th><%= sortable "bought" %></th>
     <th>today</th>
   </tr>
@@ -41,7 +41,7 @@
     <td><%= date %></td>
     <td>
       <% ids.each do |id| %>
-      <% clothe = @clothes.find(id) %>
+      <% clothe = Clothe.find_by_id(id) %>
       <%= link_to clothe.name, edit_clothe_path(clothe) %><br />
       <% end %>
     </td>

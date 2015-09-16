@@ -1,8 +1,7 @@
 class Clothe < ActiveRecord::Base
   serialize :wear, Array
   validates :name, presence: true, uniqueness: {message: "should have unique name"}
-  #c.wear << "8 Jun 2011"
-
+  
   # Getter
   def worn
     Date.today.strftime("%d %b %Y")
@@ -11,6 +10,14 @@ class Clothe < ActiveRecord::Base
   # Setter
   def worn=(date)    
     wear << date
+  end
+
+  def lastWorn
+    wear.sort_by{|date| DateTime.parse(date)}.last
+  end
+  
+  def times
+    wear.size
   end
 
   def self.getPerDay

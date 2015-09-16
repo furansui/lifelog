@@ -6,7 +6,7 @@
   
   <td>
     <% if(clothe.wear.size > 0) %>
-    <%= clothe.wear.sort_by{|date| DateTime.parse(date)}.last %>
+    <%= clothe.lastWorn %>
     <% end %>    
   </td>
   <td><%= clothe.bought %></td>

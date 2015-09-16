@@ -2,7 +2,18 @@ class ClothesController < ApplicationController
   helper_method :sort_column, :sort_direction
   
   def index
-    @clothes = Clothe.order(sort_column + ' ' + sort_direction)
+    if sort_column == "times"
+      @clothes = Clothe.all.sort_by{|c| c.times}
+    else
+      if sort_column == "lastWorn"
+        @clothes = Clothe.all.sort_by{|c| DateTime.parse(c.lastWorn)}        
+      else 
+        @clothes = Clothe.order(sort_column + ' asc').all
+      end
+    end
+    if sort_direction == "desc"
+      @clothes.reverse!
+    end
     @clothesPerDay = Clothe.getPerDay
   end
   
