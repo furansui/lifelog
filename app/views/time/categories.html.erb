@@ -5,10 +5,10 @@
 
 <%= form_tag time_categories_path, multipart: true do %>
   <%= label(:time, :begin) %>
-  <%= date_select("time","begin", selected: @summary[:head][:range][:begin]) %>
+  <%= date_select("time","begin", selected: @summary[:range][:begin]) %>
   <br />
   <%= label(:time, :end) %>
-  <%= date_select("time","end", selected: @summary[:head][:range][:end]) %>
+  <%= date_select("time","end", selected: @summary[:range][:end]) %>
   </br>
   <%= submit_tag "Submit" %>
 <% end %>
@@ -22,51 +22,26 @@
 
 <p>
 
-begin day is <%= @summary[:head][:range][:begin] %><br />
-end day is <%= @summary[:head][:range][:end] %><br />
+begin day is <%= @summary[:range][:begin] %><br />
+end day is <%= @summary[:range][:end] %><br />
 
-<% if @summary[:head][:prev][:timelog] %>
-<h4>prev</h4>
-remaining is <%= @summary[:head][:prev][:timelog] %><br />
-remaining is <%= @summary[:head][:prev][:duration] %><br />
-remaining is category <%= Category.find_by_id(@summary[:head][:prev][:timelog].category_id).name %><br />
-remaining was from <%= @summary[:head][:prev][:timelog].time %><br />
-<% end %>
-
-<% if @summary[:head][:last][:timelog] %>
-<h4>last</h4>
-remaining is <%= @summary[:head][:last][:timelog] %><br />
-remaining is <%= @summary[:head][:last][:duration] %><br />
-last timelog end time is <%= @summary[:head][:last][:endtime] %><br />
-remaining is category <%= Category.find_by_id(@summary[:head][:last][:timelog].category_id).name %><br />
-remaining was from <%= @summary[:head][:last][:timelog].time %><br />
-<% end %>
-
-<h4> summary </h4>
-<%= @summary[:head][:total][:inseconds] %>  (<%= distance_of_time_in_words(@summary[:head][:total][:inseconds]) %>)
-<%= Category.secondsToString(@summary[:head][:total][:inseconds]) %>
-</p>
+<% total = 0 %>
 
 <h4> categories </h4>
-<% @summary[:category].each do |k,v| %>
-  <span style="display: inline; background-color: <%= v[k][:color] %>; padding: 5px;">
-  <%= v[k][:name] %>
-  </span>
-  <%= Category.secondsToString(v[k][:duration]) %>
-  <ul>
-  <% v.each do |k2,v2| %>
-    <li>
-      <%= k2 %> <%= v2[:name] %> <%= Category.secondsToString(v2[:duration]) %>
-      <ul>
-      <% v2[:logs].each do |log| %>
-	<li>
-	  <%= log.time %>
-	  (<%= Category.secondsToString(log.duration) %>)
-	  <%= log.event %>
-	</li>
-      <% end %>
-      </ul>
-    </li>
+<% @summary[:category].sort_by{|category,duration| duration}.reverse.each do |category,duration| %>
+  <% total += duration %>
+  <span style="display: inline; background-color: <%= Category.find_by_id(category).root.color %>; padding: 5px;">
+  <%= Category.find_by_id(category).name %> <%= duration %>  <%= Category.secondsToString(duration) %>
+  </span><br /><br />
+  <% @summary[:timelog][category].each do |timelog| %>
+  <%= timelog.time %> <%= timelog.duration %> 
+  <%= Category.secondsToString(timelog.duration) %>
+  <%= timelog.event %>
+  <br />
   <% end %>
-  </ul>
+  <br />
 <% end %>
+  
+<p>
+  <%= @summary[:total][:category] %>
+</p>
