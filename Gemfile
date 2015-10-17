@@ -49,3 +49,6 @@ end
 # gem 'debugger', group: [:development, :test]
 
 gem 'will_paginate'
+
+# easy rails chart
+gem "chartkick"

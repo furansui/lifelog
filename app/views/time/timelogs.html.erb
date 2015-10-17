@@ -101,9 +101,5 @@ days <%= @summary[:head][:total][:days] %>
 
 <%# @summary[:row].sort_by{|v| v[:time]}.each { |v| %>
 <% @summary[:row].sort_by{|t| t[:time]}.reverse.each { |v| %>
-  <%= v[:time] %>
-  <%= v[:duration]/60 %>
-  <%= v[:endofday] %>
-  <%= link_to v[:event], timelog_path(v[:id]) %>
-  <br />
+  <%= render "timelogs/timelog", :timelog => Timelog.find_by_id(v[:id]) %>
 <% } %>

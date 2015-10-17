@@ -1,3 +1,5 @@
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+
 <p>
 <%= link_to 'Home', root_path %>
 <%= link_to 'Timelog', time_timelogs_path %>
@@ -28,16 +30,14 @@ end day is <%= @summary[:range][:end] %><br />
 <% total = 0 %>
 
 <h4> categories </h4>
+<%= pie_chart(@summary[:plot]) %>
 <% @summary[:category].sort_by{|category,duration| duration}.reverse.each do |category,duration| %>
   <% total += duration %>
   <span style="display: inline; background-color: <%= Category.find_by_id(category).root.color %>; padding: 5px;">
   <%= Category.find_by_id(category).name %> <%= duration %>  <%= Category.secondsToString(duration) %>
   </span><br /><br />
   <% @summary[:timelog][category].each do |timelog| %>
-  <%= timelog.time %> <%= timelog.duration %> 
-  <%= Category.secondsToString(timelog.duration) %>
-  <%= timelog.event %>
-  <br />
+  <%= render "timelogs/timelog", :timelog => timelog %>
   <% end %>
   <br />
 <% end %>

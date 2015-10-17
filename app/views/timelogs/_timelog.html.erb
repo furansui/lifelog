@@ -4,7 +4,6 @@
 <% end %>
 <% category = Category.find_by_id(timelog.category_id) %>
 <%= link_to category.name, category_path(category) %> 
-<%= timelog.event %>
-<%= link_to 'Show', timelog_path(timelog) %> 
+<%= link_to timelog.event, timelog_path(timelog) %> 
 <%= link_to 'Edit', edit_timelog_path(timelog) %>
 <%= link_to 'Delete', timelog_path(timelog), method: :delete, data: { confirm: 'Are you sure?' } %> <br />
