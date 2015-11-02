@@ -132,11 +132,8 @@ class Category < ActiveRecord::Base
 
     summary[:total][:category] = 0
     summary[:category].each do |category,duration|
+      summary[:plot][Category.find_by_id(category).name] = duration/3600.0
       summary[:total][:category] += duration
-    end
-
-    summary[:category].each do |category,duration|
-      summary[:plot][Category.find_by_id(category).name] = duration/3600
     end
     
     summary
