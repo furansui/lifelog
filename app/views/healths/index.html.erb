@@ -1,0 +1,11 @@
+<h1>Healths</h1>
+
+<p><%= link_to 'New health log', new_health_path %></p>
+
+<% @healths.each do |health| %>  
+  <%= health.logged_at %> <%= HealthCategory.find_by_id(health.health_category_id).name %> <%= health.value %> <%= HealthCategory.find_by_id(health.health_category_id).unit %> <%= health.notes %> 
+  <%= link_to 'Show', health_path(health) %> 
+  <%= link_to 'Edit', edit_health_path(health) %> 
+  <%= link_to 'Delete', health_path(health), method: :delete, data: { confirm: 'Are you sure?' } %>
+</br>
+<% end %>

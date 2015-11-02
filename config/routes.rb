@@ -25,6 +25,9 @@ Lifelog::Application.routes.draw do
       post :wear_today
     }
   end
+
+  resources :healths
+  resources :health_categories
   
   resources :categories do
     collection { 

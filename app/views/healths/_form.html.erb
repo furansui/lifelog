@@ -1,0 +1,32 @@
+<%= form_for @health do |f| %>
+  <% if @health.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@health.errors.count, "error") %>:</h2>
+      <ul>
+	<% @health.errors.full_messages.each do |msg| %>
+	  <li><%= msg %></li>
+	<% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= f.label :time %>
+    <%= f.datetime_select :logged_at %>
+  </p>
+  <p>
+    <%= f.label :value %>
+    <%= f.text_field :value %>
+  </p>
+  <p>
+    <%= f.label :notes %>
+    <%= f.text_field :notes %>
+  </p>
+  <p>
+    <%= f.label :category %>
+    <%= f.select :health_category_id, options_for_select(HealthCategory.all.collect{|c|[c.name, c.id]}.insert(0,"none")) %>
+  </p>
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>

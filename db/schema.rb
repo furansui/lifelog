@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150830143813) do
+ActiveRecord::Schema.define(version: 20151102071822) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -33,6 +33,22 @@ ActiveRecord::Schema.define(version: 20150830143813) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "bought"
+  end
+
+  create_table "health_categories", force: true do |t|
+    t.string   "name"
+    t.string   "unit"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "healths", force: true do |t|
+    t.datetime "logged_at"
+    t.float    "value"
+    t.integer  "health_category_id"
+    t.string   "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "timelogs", force: true do |t|

@@ -1,0 +1,11 @@
+<h1>Health Categories</h1>
+
+<p><%= link_to 'New health category', new_health_category_path %></p>
+
+<% @health_categories.each do |health_category| %>  
+  <%= health_category.id %>   <%= health_category.name %>   <%= health_category.unit %> 
+  <%= link_to 'Show', health_category_path(health_category) %> 
+  <%= link_to 'Edit', edit_health_category_path(health_category) %> 
+  <%= link_to 'Delete', health_category_path(health_category), method: :delete, data: { confirm: 'Are you sure?' } %>
+</br>
+<% end %>
