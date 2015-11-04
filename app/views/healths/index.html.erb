@@ -1,6 +1,10 @@
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+
 <h1>Healths</h1>
 
 <p><%= link_to 'New health log', new_health_path %></p>
+
+<%= line_chart @weight, min:55, max:60, library: { hAxis: {format:'MMM dd'}}  %>
 
 <% @healths.each do |health| %>  
   <%= health.logged_at %> <%= HealthCategory.find_by_id(health.health_category_id).name %> <%= health.value %> <%= HealthCategory.find_by_id(health.health_category_id).unit %> <%= health.notes %> 

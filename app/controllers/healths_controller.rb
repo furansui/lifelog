@@ -1,6 +1,7 @@
 class HealthsController < ApplicationController
   def index
-    @healths = Health.all    
+    @healths = Health.all
+    @weight = Health.weight
     respond_to do |format|
       format.html
       format.csv { send_data @healths.to_csv}

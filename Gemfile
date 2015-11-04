@@ -51,4 +51,5 @@ end
 gem 'will_paginate'
 
 # easy rails chart
-gem "chartkick"
+gem 'chartkick'
+# gem 'groupdate' #does not work on SQLITE
