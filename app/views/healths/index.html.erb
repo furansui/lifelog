@@ -4,7 +4,14 @@
 
 <p><%= link_to 'New health log', new_health_path %></p>
 
-<%= line_chart @weight, min:55, max:60, library: { hAxis: {format:'MMM dd'}}  %>
+<% poo = Health.by_category("poo") %>
+<%= line_chart [
+    {name: "weight", data: Health.by_category("weight")},
+    {name: "poo", data: poo.each{|k,v| poo[k] = 55+v*5} }
+    ],min:55, max:60, library: { hAxis: {format:'MMM dd'}, curveType: 'none'} 
+    %>
+
+<%= %>
 
 <% @healths.each do |health| %>  
   <%= health.logged_at %> <%= HealthCategory.find_by_id(health.health_category_id).name %> <%= health.value %> <%= HealthCategory.find_by_id(health.health_category_id).unit %> <%= health.notes %> 
