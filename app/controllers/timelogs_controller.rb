@@ -1,5 +1,5 @@
 class TimelogsController < ApplicationController
-
+  
   def index
     @timelogs = Timelog.all.order("time desc")
     unless request.format.csv?

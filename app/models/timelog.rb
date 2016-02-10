@@ -58,13 +58,14 @@ class Timelog < ActiveRecord::Base
 
   #find category and create
   def self.parse(row_hash)
+    #logger.debug "in parse date is #{row_hash[:event]}"
     regex = /(\S+)/
     if row_hash[:event]
       matches = row_hash[:event].match regex
-      else
+    else
       raise "error on #{row_hash}"
     end
-    
+
     #check the first word
     if matches        
       cat = Category.find_by_shortcut(matches[1].downcase)
