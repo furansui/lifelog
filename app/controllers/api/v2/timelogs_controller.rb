@@ -10,7 +10,7 @@ class Api::V2::TimelogsController < ApplicationController
       message = {:message => 'Please specify event (categories)'}
     else
       begin
-        timelog = Timelog.parse(time: Time.parse(params[:title]).in_time_zone, event: params[:categories][0])
+        timelog = Timelog.parse(time: Time.zone.parse(params[:title]), event: params[:categories][0])
         timelog.update_duration
         message = {:message => timelog}
       rescue Exception

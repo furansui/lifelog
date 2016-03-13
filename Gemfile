@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.3'
+gem 'rails', '4.2.5.1'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
@@ -29,7 +29,7 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
-gem 'acts-as-tree-with-dotted-ids', :git => 'https://github.com/xavier/acts-as-tree-with-dotted-ids.git'
+gem 'acts-as-tree-with-dotted-ids' # :git => 'https://github.com/xavier/acts-as-tree-with-dotted-ids.git'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -53,3 +53,5 @@ gem 'will_paginate'
 # easy rails chart
 gem 'chartkick'
 # gem 'groupdate' #does not work on SQLITE
+
+gem 'responders', '~> 2.0' #The controller-level `respond_to' feature has been extracted to the `responders` gem

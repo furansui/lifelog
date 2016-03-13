@@ -10,8 +10,8 @@ class TimeController < ApplicationController
     params[:begin] ||= (Time.zone.now-1.week).strftime('%Y-%m-%d 00:00')
     params[:end] ||= Time.zone.now.strftime('%Y-%m-%d 23:59')
 
-    @summary_begin = Time.parse(params[:begin]).in_time_zone
-    @summary_end = Time.parse(params[:end]).in_time_zone
+    @summary_begin = Time.zone.parse(params[:begin])
+    @summary_end = Time.zone.parse(params[:end])
     @summary = Category.summarize(:begin => @summary_begin, :end => @summary_end)    
     respond_with @summary
   end
@@ -24,8 +24,11 @@ class TimeController < ApplicationController
     params[:begin] ||= (Time.zone.now-1.week).strftime('%Y-%m-%d 00:00')
     params[:end] ||= Time.zone.now.strftime('%Y-%m-%d 23:59')
 
-    @summary_begin = Time.parse(params[:begin]).in_time_zone
-    @summary_end = Time.parse(params[:end]).in_time_zone
+    #Rails.logger.debug("My object params end: #{params[:end]}")
+    
+    @summary_begin = Time.zone.parse(params[:begin])
+    @summary_end = Time.zone.parse(params[:end])
+    
     @summary = Timelog.summarize(:begin => @summary_begin, :end => @summary_end)    
     respond_with @summary
   end

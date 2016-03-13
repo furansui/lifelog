@@ -135,7 +135,12 @@ class Category < ActiveRecord::Base
       summary[:plot][Category.find_by_id(category).name] = duration/3600.0
       summary[:total][:category] += duration
     end
-    
+
+    summary[:colors] = Array.new
+    summary[:category].each do |cat| 
+      summary[:colors].push Category.find_by_id(cat).root.color 
+    end 
+
     summary
 
   end

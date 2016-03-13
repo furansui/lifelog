@@ -30,7 +30,7 @@ end day is <%= @summary[:range][:end] %><br />
 <% total = 0 %>
 
 <h4> categories </h4>
-<%= pie_chart(@summary[:plot]) %>
+<%= pie_chart(@summary[:plot], colors: @summary[:colors]) %>
 <% @summary[:category].sort_by{|category,duration| duration}.reverse.each do |category,duration| %>
   <% total += duration %>
   <span style="display: inline; background-color: <%= Category.find_by_id(category).root.color %>; padding: 5px;">
